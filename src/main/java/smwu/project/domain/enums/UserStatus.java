@@ -2,5 +2,6 @@ package smwu.project.domain.enums;
 
 public enum UserStatus {
     ACTIVATE,
-    DEACTIVATE
+    DEACTIVATE,
+    WITHDRAWAL
 }
