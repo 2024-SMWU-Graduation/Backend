@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import smwu.project.domain.Repository.UserRepository;
 import smwu.project.domain.dto.request.SignUpRequestDto;
+import smwu.project.domain.dto.response.UserInfoResponseDto;
 import smwu.project.domain.entity.User;
 import smwu.project.domain.enums.UserRole;
 import smwu.project.domain.enums.UserStatus;
@@ -14,6 +15,7 @@ import smwu.project.global.exception.UserErrorCode;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -31,6 +33,10 @@ public class UserService {
                 .build();
 
         userRepository.save(newUser);
+    }
+
+    public UserInfoResponseDto readUserInfo(User user) {
+        return UserInfoResponseDto.of(user);
     }
 
     private void checkEmailExists(String email) {

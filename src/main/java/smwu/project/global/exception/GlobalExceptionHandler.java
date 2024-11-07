@@ -2,7 +2,6 @@ package smwu.project.global.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,7 +29,7 @@ public class GlobalExceptionHandler {
         try {
             response = mapper.writeValueAsString(errors);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            log.error(ex.getMessage());
         }
 
         ErrorResponse<String> errorMessage = new ErrorResponse<>(CommonErrorCode.BAD_REQUEST, response);
@@ -40,10 +39,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
+    public ResponseEntity<ErrorResponse<Void>> handleCustomException(CustomException e) {
         log.error("{} 예외 발생", e.getClass());
 
         return ResponseEntity.status(e.getErrorCode().getStatusCode())
-                .body(new ErrorResponse(e.getErrorCode()));
+                .body(new ErrorResponse<>(e.getErrorCode()));
     }
 }

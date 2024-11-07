@@ -13,7 +13,7 @@ import smwu.project.domain.enums.UserStatus;
 public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(nullable = false)
     private String email;

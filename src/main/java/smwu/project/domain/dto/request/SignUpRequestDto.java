@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import smwu.project.domain.entity.User;
 import smwu.project.domain.enums.UserRole;
 
 @Getter
