@@ -13,5 +13,5 @@ public enum SecurityErrorCode implements ErrorCode {
     EXPIRED_TOKEN(401, "만료된 토큰입니다.");
 
     private final int statusCode;
-    private final String errorMessage;
+    private final String message;
 }
