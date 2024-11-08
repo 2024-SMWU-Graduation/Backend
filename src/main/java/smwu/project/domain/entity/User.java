@@ -31,4 +31,8 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
+
+    public void editPassword(String newEncodedPassword) {
+        this.password = newEncodedPassword;
+    }
 }

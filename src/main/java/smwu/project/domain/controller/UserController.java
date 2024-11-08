@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import smwu.project.domain.dto.request.EditPasswordRequestDto;
 import smwu.project.domain.dto.request.SignUpRequestDto;
 import smwu.project.domain.dto.response.UserInfoResponseDto;
 import smwu.project.domain.service.UserService;
@@ -28,7 +29,7 @@ public class UserController {
                 .body(Response.of(HttpStatus.CREATED.value(), "회원가입 성공"));
     }
 
-    @GetMapping("/users")
+    @GetMapping("/users/profile")
     public ResponseEntity<Response<UserInfoResponseDto>> readUserInfo(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -38,6 +39,17 @@ public class UserController {
                 .body(Response.of(HttpStatus.OK.value(), "회원 정보 조회 성공", responseDto));
     }
 
-    // TODO : 비밀번호 수정
+    @PatchMapping("/users/password")
+    public ResponseEntity<Response<Void>> editPassword(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody @Valid EditPasswordRequestDto requestDto
+    ) {
+        userService.editPassword(userDetails.getUser(), requestDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Response.of(HttpStatus.OK.value(), "비밀번호 수정 성공"));
+    }
+
+
     // TODO : 비밀번호 찾기 -> 이메일 적용 이후에 시도
 }
