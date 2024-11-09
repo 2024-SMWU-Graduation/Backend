@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import smwu.project.domain.Repository.UserRepository;
 import smwu.project.domain.dto.request.EditPasswordRequestDto;
 import smwu.project.domain.dto.request.SignUpRequestDto;
+import smwu.project.domain.dto.request.WithdrawRequestDto;
 import smwu.project.domain.dto.response.UserInfoResponseDto;
 import smwu.project.domain.entity.User;
 import smwu.project.domain.enums.UserRole;
@@ -51,6 +52,16 @@ public class UserService {
 
         String newEncodedPassword = passwordEncoder.encode(requestDto.getNewPassword());
         user.editPassword(newEncodedPassword);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void withdraw(User user, WithdrawRequestDto requestDto) {
+        String currentPassword = user.getPassword();
+        String inputPassword = requestDto.getPassword();
+
+        checkPasswordMatch(currentPassword, inputPassword);
+        user.withdraw();
         userRepository.save(user);
     }
 
