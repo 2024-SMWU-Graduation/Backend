@@ -21,8 +21,15 @@ public class Response<T> {
         return new Response<>(statusCode, "Success.", null);
     }
 
+    public static <T> Response<T> of(String message) {
+        return new Response<>(200, message, null);
+    }
+
     public static <T> Response<T> of(int statusCode, String message) {
         return new Response<>(statusCode, message, null);
+    }
+    public static <T> Response<T> of(String message, T data) {
+        return new Response<>(200, message, data);
     }
 
     public static <T> Response<T> of(int statusCode, String message, T data) {

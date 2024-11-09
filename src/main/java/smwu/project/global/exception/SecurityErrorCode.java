@@ -2,7 +2,6 @@ package smwu.project.global.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
@@ -13,5 +12,5 @@ public enum SecurityErrorCode implements ErrorCode {
     EXPIRED_TOKEN(401, "만료된 토큰입니다.");
 
     private final int statusCode;
-    private final String errorMessage;
+    private final String message;
 }

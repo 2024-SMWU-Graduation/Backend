@@ -82,7 +82,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 .permitAll() //resource 접근 허용 설정
-                .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll() // non-user 접근허용
+                .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll() // 회원가입 접근 허용
                 .requestMatchers(HttpMethod.POST, "/api/auth/reissue").permitAll()
                 .anyRequest().authenticated()
         );
