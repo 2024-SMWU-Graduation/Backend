@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import smwu.project.domain.dto.request.EmailRequestDto;
+import smwu.project.domain.dto.request.VerificationCodeRequestDto;
 import smwu.project.domain.service.MailService;
 import smwu.project.global.response.Response;
 
@@ -33,5 +34,15 @@ public class MailController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(Response.of("인증번호가 전송되었습니다."));
+    }
+
+    @GetMapping("/verification-code")
+    public ResponseEntity<Response<Void>> validateVerificationCode(
+            @RequestBody @Valid VerificationCodeRequestDto requestDto
+    ) {
+        mailService.validateVerificationCode(requestDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Response.of("이메일 인증이 완료되었습니다."));
     }
 }

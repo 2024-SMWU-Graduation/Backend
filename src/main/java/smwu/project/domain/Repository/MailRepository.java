@@ -23,10 +23,9 @@ public class MailRepository {
     }
 
     public String getVerificationCode(String email) {
-        String verificationCode = (String)redisTemplate.opsForValue().get(createEmailPrefix(email));
-
+        String verificationCode = (String) redisTemplate.opsForValue().get(createEmailPrefix(email));
         if(verificationCode == null) {
-            throw new CustomException(MailErrorCode.INVALID_VERIFICATION_CODE);
+            throw new CustomException(MailErrorCode.VERIFICATION_CODE_NOT_FOUND);
         }
         return verificationCode;
     }

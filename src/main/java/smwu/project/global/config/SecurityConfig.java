@@ -84,7 +84,7 @@ public class SecurityConfig {
                 .permitAll() //resource 접근 허용 설정
                 .requestMatchers(HttpMethod.GET, "/api/mail").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/mail").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/mail/certification").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/mail/verification-code").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll() // 회원가입 접근 허용
                 .requestMatchers(HttpMethod.POST, "/api/auth/reissue").permitAll()
                 .anyRequest().authenticated()
