@@ -14,8 +14,8 @@ import java.nio.charset.StandardCharsets;
 public class ResponseUtil {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static void writeJsonResponse(HttpServletResponse response, HttpStatus status, String message, String data) throws IOException {
-        Response<String> responseMessage = Response.of(status.value(), message, data);
+    public static void writeJsonResponse(HttpServletResponse response, HttpStatus status, String message, Object data) throws IOException {
+        Response<Object> responseMessage = Response.of(status.value(), message, data);
 
         String jsonResponse = objectMapper.writeValueAsString(responseMessage);
         response.setCharacterEncoding("UTF-8");
