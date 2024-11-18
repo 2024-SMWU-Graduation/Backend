@@ -21,6 +21,7 @@ public class OAuth2UserInfo {
     public static OAuth2UserInfo of(String registrationId, Map<String, Object> attributes) {
         return switch (registrationId) {
             case "kakao" -> ofKakao(registrationId, attributes);
+            case "naver" -> ofNaver(registrationId, attributes);
             default -> throw new CustomException(AuthErrorCode.INVALID_OAUTH2_PROVIDER);
         };
     }
@@ -33,6 +34,16 @@ public class OAuth2UserInfo {
                 .registrationId(registrationId)
                 .email((String) account.get("email"))
                 .name((String) profile.get("nickname"))
+                .build();
+    }
+
+    private static OAuth2UserInfo ofNaver(String registrationId, Map<String, Object> attributes) {
+        Map<String, Object> account = (Map<String, Object>) attributes.get("response");
+
+        return OAuth2UserInfo.builder()
+                .registrationId(registrationId)
+                .email((String) account.get("email"))
+                .name((String) account.get("name"))
                 .build();
     }
 

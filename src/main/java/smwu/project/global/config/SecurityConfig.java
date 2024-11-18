@@ -22,7 +22,7 @@ import smwu.project.global.jwt.JwtProvider;
 import smwu.project.global.security.CustomOAuth2UserService;
 import smwu.project.global.security.OAuth2SuccessHandler;
 import smwu.project.global.security.UserDetailsServiceImpl;
-import smwu.project.global.security.filter.AuthorizationFilter;
+import smwu.project.global.security.filter.JwtAuthorizationFilter;
 import smwu.project.global.security.filter.LoginFilter;
 
 import java.util.List;
@@ -48,8 +48,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthorizationFilter authorizationFilter() {
-        return new AuthorizationFilter(jwtProvider, userDetailsService);
+    public JwtAuthorizationFilter authorizationFilter() {
+        return new JwtAuthorizationFilter(jwtProvider, userDetailsService);
     }
 
     @Bean
