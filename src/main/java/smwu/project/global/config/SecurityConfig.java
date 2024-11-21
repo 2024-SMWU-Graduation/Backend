@@ -19,8 +19,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import smwu.project.global.jwt.JwtProvider;
+import smwu.project.global.security.CustomOAuth2UserService;
+import smwu.project.global.security.OAuth2SuccessHandler;
 import smwu.project.global.security.UserDetailsServiceImpl;
-import smwu.project.global.security.filter.AuthorizationFilter;
+import smwu.project.global.security.filter.JwtAuthorizationFilter;
 import smwu.project.global.security.filter.LoginFilter;
 
 import java.util.List;
@@ -31,6 +33,8 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final UserDetailsServiceImpl userDetailsService;
+    private final CustomOAuth2UserService oAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
@@ -44,8 +48,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthorizationFilter authorizationFilter() {
-        return new AuthorizationFilter(jwtProvider, userDetailsService);
+    public JwtAuthorizationFilter authorizationFilter() {
+        return new JwtAuthorizationFilter(jwtProvider, userDetailsService);
     }
 
     @Bean
@@ -72,7 +76,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable); // CSFF 설정
+        http.csrf(AbstractHttpConfigurer::disable); // CSRF 설정
         http.cors(corsConfigurer -> corsConfigurer.configurationSource(
                 corsConfigurationSource())); // CORS 설정
 
@@ -81,13 +85,19 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                .permitAll() //resource 접근 허용 설정
-                .requestMatchers(HttpMethod.GET, "/api/mail").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/mail").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/mail/verification-code").permitAll()
+                .permitAll() // resource 접근 허용 설정
+                .requestMatchers("/users/login-page").permitAll()
+                .requestMatchers("/error").permitAll()
+                .requestMatchers("/favicon.ico").permitAll()
+                .requestMatchers("/api/mail**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll() // 회원가입 접근 허용
                 .requestMatchers(HttpMethod.POST, "/api/auth/reissue").permitAll()
                 .anyRequest().authenticated()
+        );
+
+        http.oauth2Login(oauth -> oauth
+                .userInfoEndpoint(c -> c.userService(oAuth2UserService))
+                .successHandler(oAuth2SuccessHandler)
         );
 
         http.addFilterBefore(authorizationFilter(), LoginFilter.class);

@@ -19,7 +19,7 @@ import smwu.project.global.security.UserDetailsServiceImpl;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class AuthorizationFilter extends OncePerRequestFilter {
+public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final UserDetailsServiceImpl userDetailsService;
 

@@ -2,6 +2,7 @@ package smwu.project.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import smwu.project.domain.enums.OAuthProvider;
 import smwu.project.domain.enums.UserRole;
 import smwu.project.domain.enums.UserStatus;
 
@@ -21,8 +22,12 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OAuthProvider oAuthProvider;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
