@@ -25,17 +25,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         System.out.println(oAuth2UserAttributes);
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-//        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 
         OAuth2UserInfo userInfo = OAuth2UserInfo.of(registrationId, oAuth2UserAttributes);
-//        String email = oAuth2User.getAttribute("email");
         User user = getOrSave(userInfo);
         return new UserDetailsImpl(user);
     }
 
     private User getOrSave(OAuth2UserInfo userInfo) {
         User user = userRepository.findByEmail(userInfo.getEmail()).orElseGet(userInfo::toEntity);
-
         return userRepository.save(user);
     }
 }
