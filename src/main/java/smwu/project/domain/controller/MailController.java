@@ -16,7 +16,7 @@ import smwu.project.global.response.Response;
 public class MailController {
     private final MailService mailService;
 
-    @GetMapping
+    @PostMapping("/check")
     public ResponseEntity<Response<Void>> verifyMail(
             @RequestBody @Valid EmailRequestDto requestDto
     ) {
