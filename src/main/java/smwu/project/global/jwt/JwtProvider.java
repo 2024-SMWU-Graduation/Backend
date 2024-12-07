@@ -9,12 +9,12 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.usertype.UserType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import smwu.project.domain.enums.UserRole;
 import smwu.project.global.exception.CustomException;
-import smwu.project.global.exception.SecurityErrorCode;
+import smwu.project.global.exception.CustomSecurityException;
+import smwu.project.global.exception.errorCode.SecurityErrorCode;
 
 import java.security.Key;
 import java.util.Base64;
@@ -116,7 +116,7 @@ public class JwtProvider {
         } catch (ExpiredJwtException e) {
             log.error("Expired JWT token, 만료된 JWT token 입니다.");
             request.setAttribute("exception",
-                    new CustomException(SecurityErrorCode.EXPIRED_TOKEN));
+                    new CustomSecurityException(SecurityErrorCode.EXPIRED_TOKEN));
         }
         return false;
     }

@@ -1,6 +1,6 @@
 package smwu.project.global.response;
 
-import smwu.project.global.exception.ErrorCode;
+import smwu.project.global.exception.errorCode.ErrorCode;
 
 public class ErrorResponse<T> extends Response<T> {
 

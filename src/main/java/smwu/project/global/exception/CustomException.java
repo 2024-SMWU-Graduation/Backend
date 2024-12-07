@@ -1,6 +1,7 @@
 package smwu.project.global.exception;
 
 import lombok.Getter;
+import smwu.project.global.exception.errorCode.ErrorCode;
 
 @Getter
 public class CustomException extends RuntimeException {

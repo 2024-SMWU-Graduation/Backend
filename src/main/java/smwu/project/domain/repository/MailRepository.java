@@ -1,10 +1,10 @@
-package smwu.project.domain.Repository;
+package smwu.project.domain.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 import smwu.project.global.exception.CustomException;
-import smwu.project.global.exception.MailErrorCode;
+import smwu.project.global.exception.errorCode.MailErrorCode;
 
 import java.time.Duration;
 

@@ -19,9 +19,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import smwu.project.global.jwt.JwtProvider;
+import smwu.project.global.jwt.RefreshTokenService;
 import smwu.project.global.security.CustomOAuth2UserService;
 import smwu.project.global.security.OAuth2SuccessHandler;
 import smwu.project.global.security.UserDetailsServiceImpl;
+import smwu.project.global.security.filter.CustomAuthenticationEntryPoint;
 import smwu.project.global.security.filter.JwtAuthorizationFilter;
 import smwu.project.global.security.filter.LoginFilter;
 
@@ -32,7 +34,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
     private final UserDetailsServiceImpl userDetailsService;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final AuthenticationConfiguration authenticationConfiguration;
@@ -54,7 +58,7 @@ public class SecurityConfig {
 
     @Bean
     public LoginFilter loginFilter() throws Exception {
-        LoginFilter filter = new LoginFilter(jwtProvider);
+        LoginFilter filter = new LoginFilter(jwtProvider, refreshTokenService);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return filter;
     }
@@ -102,6 +106,8 @@ public class SecurityConfig {
 
         http.addFilterBefore(authorizationFilter(), LoginFilter.class);
         http.addFilterBefore(loginFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        http.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(authenticationEntryPoint));
 
         return http.build();
     }

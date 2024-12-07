@@ -7,12 +7,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import smwu.project.domain.Repository.MailRepository;
-import smwu.project.domain.Repository.UserRepository;
+import smwu.project.domain.repository.MailRepository;
+import smwu.project.domain.repository.UserRepository;
 import smwu.project.domain.dto.request.EmailRequestDto;
 import smwu.project.domain.dto.request.VerificationCodeRequestDto;
 import smwu.project.global.exception.CustomException;
-import smwu.project.global.exception.MailErrorCode;
+import smwu.project.global.exception.errorCode.MailErrorCode;
 
 import java.util.Random;
 

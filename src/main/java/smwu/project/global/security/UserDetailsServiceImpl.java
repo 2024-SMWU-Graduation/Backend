@@ -5,10 +5,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import smwu.project.domain.Repository.UserRepository;
+import smwu.project.domain.repository.UserRepository;
 import smwu.project.domain.entity.User;
 import smwu.project.global.exception.CustomException;
-import smwu.project.global.exception.SecurityErrorCode;
+import smwu.project.global.exception.errorCode.SecurityErrorCode;
 
 @Service
 @RequiredArgsConstructor
