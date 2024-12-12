@@ -69,6 +69,4 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(Response.of("회원 로그아웃 성공"));
     }
-
-    // TODO : 비밀번호 찾기 -> 이메일 적용 이후에 시도
 }

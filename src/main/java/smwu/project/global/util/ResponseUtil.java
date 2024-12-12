@@ -2,6 +2,8 @@ package smwu.project.global.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import smwu.project.global.exception.errorCode.ErrorCode;
@@ -11,6 +13,7 @@ import smwu.project.global.response.Response;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResponseUtil {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

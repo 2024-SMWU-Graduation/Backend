@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     default User findByEmailOrElseThrow(String email) {
-        return findByEmail(email).orElseThrow(() -> new CustomException(UserErrorCode.EMAIL_ALREADY_EXISTS));
+        return findByEmail(email).orElseThrow(() -> new CustomException(UserErrorCode.EMAIL_NOT_FOUND));
     }
 
     default void checkEmailExists(String email) {

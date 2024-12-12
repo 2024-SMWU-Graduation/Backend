@@ -27,10 +27,10 @@ public class MailController {
     }
 
     @PostMapping
-    public ResponseEntity<Response<Void>> sendCertificationCode(
+    public ResponseEntity<Response<Void>> sendVerificationMail(
             @RequestBody @Valid EmailRequestDto requestDto
     ) {
-        mailService.sendCertificationMail(requestDto);
+        mailService.sendVerificationMail(requestDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(Response.of("인증번호가 전송되었습니다."));
@@ -44,5 +44,15 @@ public class MailController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(Response.of("이메일 인증이 완료되었습니다."));
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<Response<Void>> sendTempPassword(
+            @RequestBody @Valid EmailRequestDto requestDto
+    ) {
+        mailService.sendTempPassword(requestDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Response.of("임시 비밀번호가 전송되었습니다."));
     }
 }
