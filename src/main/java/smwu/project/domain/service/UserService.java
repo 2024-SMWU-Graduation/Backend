@@ -27,7 +27,7 @@ public class UserService {
 
     @Transactional
     public void signup(SignUpRequestDto requestDto) {
-        checkEmailExists(requestDto.getEmail());
+        userRepository.checkEmailExists(requestDto.getEmail());
 
         User newUser = User.builder()
                 .email(requestDto.getEmail())
@@ -73,11 +73,6 @@ public class UserService {
 
     public void logout(User user) {
         refreshTokenService.deleteRefreshTokenInfo(user.getEmail());
-    }
-
-    private void checkEmailExists(String email) {
-        if(userRepository.existsByEmail(email))
-            throw new CustomException(UserErrorCode.EMAIL_ALREADY_EXISTS);
     }
 
     private void checkPasswordMatch(String realPassword, String inputPassword) {

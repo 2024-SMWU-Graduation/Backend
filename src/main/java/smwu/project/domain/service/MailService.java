@@ -24,9 +24,7 @@ public class MailService {
     private final MailRepository mailRepository;
 
     public void verifyMail(EmailRequestDto requestDto) {
-        if(userRepository.existsByEmail(requestDto.getEmail())) {
-            throw new CustomException(MailErrorCode.EMAIL_ALREADY_EXISTS);
-        }
+        userRepository.checkEmailExists(requestDto.getEmail());
     }
 
     @Transactional

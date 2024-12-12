@@ -14,4 +14,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     default User findByEmailOrElseThrow(String email) {
         return findByEmail(email).orElseThrow(() -> new CustomException(UserErrorCode.EMAIL_ALREADY_EXISTS));
     }
+
+    default void checkEmailExists(String email) {
+        if(existsByEmail(email))
+            throw new CustomException(UserErrorCode.EMAIL_ALREADY_EXISTS);
+    }
 }
