@@ -17,7 +17,7 @@ import smwu.project.global.response.Response;
 public class AuthController {
     private final AuthService authService;
 
-    @PostMapping
+    @PostMapping("/reissue")
     public ResponseEntity<Response<Void>> reissue(HttpServletRequest request, HttpServletResponse response) {
         authService.reissue(request, response);
         return ResponseEntity.status(HttpStatus.OK).body(Response.of("Token 재발급이 완료되었습니다."));

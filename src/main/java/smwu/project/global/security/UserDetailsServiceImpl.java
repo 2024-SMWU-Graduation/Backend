@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import smwu.project.domain.repository.UserRepository;
 import smwu.project.domain.entity.User;
-import smwu.project.global.exception.CustomException;
+import smwu.project.global.exception.CustomSecurityException;
 import smwu.project.global.exception.errorCode.SecurityErrorCode;
 
 @Service
@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user =  userRepository.findByEmail(username).orElseThrow(() ->
-                new CustomException(SecurityErrorCode.USER_NOT_FOUND));
+                new CustomSecurityException(SecurityErrorCode.USER_NOT_FOUND));
 
         return new UserDetailsImpl(user);
     }
