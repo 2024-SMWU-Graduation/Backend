@@ -13,7 +13,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import smwu.project.global.exception.CustomSecurityException;
+import smwu.project.global.exception.errorCode.SecurityErrorCode;
 import smwu.project.global.jwt.JwtProvider;
+import smwu.project.global.jwt.RefreshTokenService;
 import smwu.project.global.security.UserDetailsServiceImpl;
 
 import java.io.IOException;
@@ -21,6 +24,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
     private final UserDetailsServiceImpl userDetailsService;
 
     /**
@@ -34,7 +38,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if(jwtProvider.validateTokenInternal(request, accessToken)) {
                 Claims info = jwtProvider.getUserInfoFromClaims(accessToken);
                 String userEmail = info.getSubject();
-                setAuthentication(userEmail);
+
+                if(refreshTokenService.isRefreshTokenPresent(userEmail)) {
+                    setAuthentication(userEmail);
+                } else{
+                    request.setAttribute("exception", new CustomSecurityException(SecurityErrorCode.INVALID_ACCESS_TOKEN));
+                }
             }
         }
         filterChain.doFilter(request, response);

@@ -1,4 +1,4 @@
-package smwu.project.global.exception;
+package smwu.project.global.exception.errorCode;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

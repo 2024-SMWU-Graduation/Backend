@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import smwu.project.domain.Repository.UserRepository;
+import smwu.project.domain.enums.OAuthProvider;
 import smwu.project.domain.dto.request.EditPasswordRequestDto;
 import smwu.project.domain.dto.request.SignUpRequestDto;
 import smwu.project.domain.dto.request.WithdrawRequestDto;
@@ -12,8 +12,10 @@ import smwu.project.domain.dto.response.UserInfoResponseDto;
 import smwu.project.domain.entity.User;
 import smwu.project.domain.enums.UserRole;
 import smwu.project.domain.enums.UserStatus;
+import smwu.project.domain.repository.UserRepository;
 import smwu.project.global.exception.CustomException;
-import smwu.project.global.exception.UserErrorCode;
+import smwu.project.global.exception.errorCode.UserErrorCode;
+import smwu.project.global.jwt.RefreshTokenService;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ import smwu.project.global.exception.UserErrorCode;
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public void signup(SignUpRequestDto requestDto) {
@@ -31,6 +34,7 @@ public class UserService {
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .name(requestDto.getName())
                 .userStatus(UserStatus.ACTIVATE)
+                .oAuthProvider(OAuthProvider.ORIGIN)
                 .userRole(UserRole.USER)
                 .build();
 
@@ -63,6 +67,12 @@ public class UserService {
         checkPasswordMatch(currentPassword, inputPassword);
         user.withdraw();
         userRepository.save(user);
+
+        refreshTokenService.deleteRefreshTokenInfo(user.getEmail());
+    }
+
+    public void logout(User user) {
+        refreshTokenService.deleteRefreshTokenInfo(user.getEmail());
     }
 
     private void checkEmailExists(String email) {

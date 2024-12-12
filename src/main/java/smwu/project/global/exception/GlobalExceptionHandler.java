@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import smwu.project.global.exception.errorCode.CommonErrorCode;
 import smwu.project.global.response.ErrorResponse;
 
 import java.util.Map;

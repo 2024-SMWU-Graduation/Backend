@@ -10,6 +10,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 import smwu.project.domain.entity.User;
 import smwu.project.global.jwt.JwtProvider;
+import smwu.project.global.jwt.RefreshTokenService;
 import smwu.project.global.util.ResponseUtil;
 
 import java.io.IOException;
@@ -17,16 +18,17 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler  {
-
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         User user = userDetails.getUser();
 
         String accessToken = jwtProvider.createAccessToken(user.getEmail(), user.getUserRole());
         String refreshToken = jwtProvider.createRefreshToken(user.getEmail());
+        refreshTokenService.saveRefreshTokenInfo(user.getEmail(), refreshToken);
 
         response.addHeader(JwtProvider.AUTHORIZATION_HEADER, accessToken);
         response.addHeader(JwtProvider.REFRESH_HEADER, refreshToken);

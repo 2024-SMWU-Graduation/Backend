@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,8 +14,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import smwu.project.domain.dto.request.LoginRequestDto;
 import smwu.project.domain.entity.User;
 import smwu.project.domain.enums.UserStatus;
-import smwu.project.global.exception.SecurityErrorCode;
+import smwu.project.global.exception.errorCode.SecurityErrorCode;
 import smwu.project.global.jwt.JwtProvider;
+import smwu.project.global.jwt.RefreshTokenService;
 import smwu.project.global.security.UserDetailsImpl;
 import smwu.project.global.util.ResponseUtil;
 
@@ -23,9 +25,11 @@ import java.io.IOException;
 @Slf4j(topic = "로그인 필터")
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
-    public LoginFilter(JwtProvider jwtProvider) {
+    public LoginFilter(JwtProvider jwtProvider, RefreshTokenService refreshTokenService) {
         this.jwtProvider = jwtProvider;
+        this.refreshTokenService = refreshTokenService;
         setFilterProcessesUrl("/api/users/login");
     }
 
@@ -54,6 +58,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             String accessToken = jwtProvider.createAccessToken(userEmail, loginUser.getUserRole());
             String refreshToken = jwtProvider.createRefreshToken(userEmail);
 
+            refreshTokenService.saveRefreshTokenInfo(userEmail, refreshToken);
             response.addHeader(JwtProvider.AUTHORIZATION_HEADER, accessToken);
             response.addHeader(JwtProvider.REFRESH_HEADER, refreshToken);
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import smwu.project.global.exception.ErrorCode;
+import smwu.project.global.exception.errorCode.ErrorCode;
 import smwu.project.global.response.ErrorResponse;
 import smwu.project.global.response.Response;
 

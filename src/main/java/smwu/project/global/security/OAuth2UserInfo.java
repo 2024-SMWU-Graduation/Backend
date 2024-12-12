@@ -6,7 +6,7 @@ import smwu.project.domain.entity.User;
 import smwu.project.domain.enums.OAuthProvider;
 import smwu.project.domain.enums.UserRole;
 import smwu.project.domain.enums.UserStatus;
-import smwu.project.global.exception.AuthErrorCode;
+import smwu.project.global.exception.errorCode.AuthErrorCode;
 import smwu.project.global.exception.CustomException;
 
 import java.util.Map;
