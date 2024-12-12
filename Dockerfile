@@ -10,7 +10,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the jar file (build it first)
-COPY build/libs/graduation-project.jar app.jar
+COPY --from=build /app/build/libs/graduation-project.jar app.jar
 
 # Expose the application port
 EXPOSE 8080
