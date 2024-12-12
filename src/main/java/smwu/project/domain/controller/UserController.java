@@ -16,11 +16,11 @@ import smwu.project.global.security.UserDetailsImpl;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/users/signup")
+    @PostMapping("/signup")
     public ResponseEntity<Response<Void>> signup(
             @RequestBody @Valid SignUpRequestDto signUpRequestDto
     ) {
@@ -30,7 +30,7 @@ public class UserController {
                 .body(Response.of(HttpStatus.CREATED.value(), "회원가입 성공"));
     }
 
-    @GetMapping("/users/profile")
+    @GetMapping("/profile")
     public ResponseEntity<Response<UserInfoResponseDto>> readUserInfo(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -40,7 +40,7 @@ public class UserController {
                 .body(Response.of("회원 정보 조회 성공", responseDto));
     }
 
-    @PatchMapping("/users/password")
+    @PatchMapping("/password")
     public ResponseEntity<Response<Void>> editPassword(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody @Valid EditPasswordRequestDto requestDto
@@ -51,7 +51,7 @@ public class UserController {
                 .body(Response.of("비밀번호 수정 성공"));
     }
 
-    @PatchMapping("/users/withdrawal")
+    @PatchMapping("/withdrawal")
     public ResponseEntity<Response<Void>> withdraw(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody @Valid WithdrawRequestDto requestDto
@@ -60,6 +60,14 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(Response.of("회원 탈퇴 성공"));
+    }
+
+    @PatchMapping("/logout")
+    public ResponseEntity<Response<Void>> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.logout(userDetails.getUser());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Response.of("회원 로그아웃 성공"));
     }
 
     // TODO : 비밀번호 찾기 -> 이메일 적용 이후에 시도

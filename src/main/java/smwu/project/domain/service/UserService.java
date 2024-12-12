@@ -15,6 +15,7 @@ import smwu.project.domain.enums.UserStatus;
 import smwu.project.domain.repository.UserRepository;
 import smwu.project.global.exception.CustomException;
 import smwu.project.global.exception.errorCode.UserErrorCode;
+import smwu.project.global.jwt.RefreshTokenService;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ import smwu.project.global.exception.errorCode.UserErrorCode;
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public void signup(SignUpRequestDto requestDto) {
@@ -65,6 +67,12 @@ public class UserService {
         checkPasswordMatch(currentPassword, inputPassword);
         user.withdraw();
         userRepository.save(user);
+
+        refreshTokenService.deleteRefreshTokenInfo(user.getEmail());
+    }
+
+    public void logout(User user) {
+        refreshTokenService.deleteRefreshTokenInfo(user.getEmail());
     }
 
     private void checkEmailExists(String email) {
