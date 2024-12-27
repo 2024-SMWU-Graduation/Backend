@@ -25,7 +25,7 @@ public abstract class S3Util {
      * 파일 확장자 검사
      */
     public static String getValidateVideoExtension(String fileName) {
-        List<String> validExtensionList = Arrays.asList("mp4", "avi");
+        List<String> validExtensionList = Arrays.asList("mp4", "avi", "mov");
 
         int extensionIndex = fileName.lastIndexOf(".");
 
@@ -39,7 +39,7 @@ public abstract class S3Util {
     }
 
     public static String createIntroduceDir(Long userId) {
-        return INTRODUCE_DIR + "/" + USER_DIR + "/" + userId;
+        return INTRODUCE_DIR + "/" + USER_DIR + "/" + userId + "/";
     }
 
     /**
