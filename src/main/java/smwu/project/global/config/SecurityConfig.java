@@ -93,7 +93,8 @@ public class SecurityConfig {
                 .requestMatchers("/users/login-page").permitAll()
                 .requestMatchers("/error").permitAll()
                 .requestMatchers("/favicon.ico").permitAll()
-                .requestMatchers("/api/mail**").permitAll()
+                .requestMatchers("/api/mail").permitAll()
+                .requestMatchers("/api/mail/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll() // 회원가입 접근 허용
                 .requestMatchers(HttpMethod.POST, "/api/auth/reissue").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/interview").permitAll() // 임시

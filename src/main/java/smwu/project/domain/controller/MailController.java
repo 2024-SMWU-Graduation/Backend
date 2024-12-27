@@ -36,7 +36,7 @@ public class MailController {
                 .body(Response.of("인증번호가 전송되었습니다."));
     }
 
-    @GetMapping("/verification-code")
+    @PostMapping("/verification-code")
     public ResponseEntity<Response<Void>> validateVerificationCode(
             @RequestBody @Valid VerificationCodeRequestDto requestDto
     ) {
