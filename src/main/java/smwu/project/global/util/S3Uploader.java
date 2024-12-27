@@ -29,7 +29,7 @@ public class S3Uploader {
         return uploadVideo(file, imageDir);
     }
 
-//    public String uploadRandomInterview(MultipartFile file, Long storeId, Long themeId) {
+//    public String uploadRandomInterview(MultipartFile file, Long storeId, Long userId) {
 //        String imageDir = createThemeImageDir(storeId, themeId);
 //        return uploadVideo(file, imageDir);
 //    }
