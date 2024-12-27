@@ -1,6 +1,7 @@
 FROM openjdk:17-jdk-slim AS build
 WORKDIR /app
 COPY . .
+RUN chmod +x ./gradlew
 RUN ./gradlew bootjar
 
 # Base image
