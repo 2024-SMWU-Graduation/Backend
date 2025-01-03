@@ -13,6 +13,9 @@ public abstract class S3Util {
     private static final String USER_DIR = "user";
     private static final String INTRODUCE_DIR = "introduce";
     private static final String RANDOM_DIR = "random";
+    private static final String VIDEO_DIR = "video";
+
+
 
     /**
      * 파일 존재 여부 검사
@@ -39,7 +42,7 @@ public abstract class S3Util {
     }
 
     public static String createIntroduceDir(Long userId) {
-        return USER_DIR + "/" + userId + "/" + INTRODUCE_DIR + "/";
+        return USER_DIR + "/" + userId + "/" + INTRODUCE_DIR + "/" + VIDEO_DIR + "/";
     }
 
     /**
