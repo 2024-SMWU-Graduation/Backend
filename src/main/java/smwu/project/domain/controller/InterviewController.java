@@ -21,7 +21,7 @@ public class InterviewController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) {
-        String uploadUrl = interviewService.uploadInterviewVideo(file);
+        String uploadUrl = interviewService.uploadInterviewVideo(userDetails.getUser(), file);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(Response.of("인터뷰 영상 업로드 완료", uploadUrl));
