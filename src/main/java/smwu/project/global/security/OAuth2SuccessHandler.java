@@ -33,6 +33,9 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler  {
         response.addHeader(JwtProvider.AUTHORIZATION_HEADER, accessToken);
         response.addHeader(JwtProvider.REFRESH_HEADER, refreshToken);
 
-        ResponseUtil.writeJsonResponse(response, HttpStatus.OK, "로그인 성공", authentication.getName());
+        String frontendRedirectUrl = "http://localhost:3000/social-success";
+        response.sendRedirect(frontendRedirectUrl + "?accessToken=" + accessToken +
+                "&refreshToken=" + refreshToken);
+
     }
 }
