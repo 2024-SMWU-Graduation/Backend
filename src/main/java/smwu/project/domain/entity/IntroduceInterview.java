@@ -1,10 +1,15 @@
 package smwu.project.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 
 @Entity
-public class Interview extends BaseTimeEntity {
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class IntroduceInterview extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,4 +20,7 @@ public class Interview extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String videoUrl;
+
+    @Column(nullable = false)
+    private String title;
 }
