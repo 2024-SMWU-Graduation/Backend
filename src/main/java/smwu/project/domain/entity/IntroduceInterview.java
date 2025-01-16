@@ -23,4 +23,8 @@ public class IntroduceInterview extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String title;
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

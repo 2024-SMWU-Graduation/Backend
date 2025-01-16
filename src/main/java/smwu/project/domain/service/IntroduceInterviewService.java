@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import smwu.project.domain.dto.request.EditTitleRequestDto;
 import smwu.project.domain.dto.response.IntroduceInterviewListResponseDto;
 import smwu.project.domain.entity.IntroduceInterview;
 import smwu.project.domain.entity.User;
@@ -35,7 +36,12 @@ public class IntroduceInterviewService {
 
     public IntroduceInterviewListResponseDto readIntroduceInterviewList(User user) {
         List<IntroduceInterview> interviewList =  introduceInterviewRepository.findAllByUser(user);
-
         return IntroduceInterviewListResponseDto.of(interviewList);
+    }
+
+    @Transactional
+    public void editInterviewTitle(User user, EditTitleRequestDto requestDto) {
+        IntroduceInterview introduceInterview = introduceInterviewRepository.findByIdAndUserOrElseThrow(requestDto.getInterviewId(), user);
+        introduceInterview.setTitle(requestDto.getTitle());
     }
 }
