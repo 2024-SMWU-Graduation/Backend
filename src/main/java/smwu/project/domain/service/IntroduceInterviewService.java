@@ -19,6 +19,8 @@ public class IntroduceInterviewService {
     private final IntroduceInterviewRepository introduceInterviewRepository;
     private final S3Uploader s3Uploader;
 
+    private static final String INTERVIEW_DEFAULT_TITLE = "자기소개 모의 면접";
+
     @Transactional
     public String uploadInterviewVideo(User user, MultipartFile file) {
         Long userId = user.getId();
@@ -26,7 +28,7 @@ public class IntroduceInterviewService {
 
         IntroduceInterview introduceInterview = IntroduceInterview.builder()
                 .user(user)
-                .title("임시 제목이여")
+                .title(INTERVIEW_DEFAULT_TITLE)
                 .videoUrl(videoUrl)
                 .build();
 
