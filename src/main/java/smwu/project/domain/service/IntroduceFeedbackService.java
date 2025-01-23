@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import smwu.project.domain.dto.request.FeedbackRequestDto;
+import smwu.project.domain.dto.response.FeedbackResponseDto;
 import smwu.project.domain.entity.IntroduceFeedback;
 import smwu.project.domain.entity.IntroduceInterview;
 import smwu.project.domain.entity.User;
@@ -27,5 +28,11 @@ public class IntroduceFeedbackService {
                 .build();
 
         introduceFeedbackRepository.save(introduceFeedback);
+    }
+
+    public FeedbackResponseDto readFeedback(User user, Long interviewId) {
+        IntroduceInterview interview = introduceInterviewRepository.findByIdOrElseThrow(user, interviewId);
+        IntroduceFeedback feedback = introduceFeedbackRepository.findByInterviewOrElseThrow(interview);
+        return FeedbackResponseDto.of(feedback, interview);
     }
 }

@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import smwu.project.domain.entity.IntroduceInterview;
 import smwu.project.domain.entity.User;
 import smwu.project.global.exception.CustomException;
-import smwu.project.global.exception.errorCode.IntroduceInterviewErrorCode;
+import smwu.project.global.exception.errorCode.InterviewErrorCode;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +14,7 @@ public interface IntroduceInterviewRepository extends JpaRepository<IntroduceInt
     List<IntroduceInterview> findAllByUser(User user);
 
     default IntroduceInterview findByIdOrElseThrow(User user, Long id) {
-        return findByUserAndId(user, id).orElseThrow(() ->
-                new CustomException(IntroduceInterviewErrorCode.NOT_FOUND));
+        return findByUserAndId(user, id).orElseThrow(()
+                -> new CustomException(InterviewErrorCode.INTERVIEW_NOT_FOUND));
     }
 }
