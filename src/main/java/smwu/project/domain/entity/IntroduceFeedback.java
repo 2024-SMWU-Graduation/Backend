@@ -20,6 +20,6 @@ public class IntroduceFeedback extends BaseTimeEntity {
     @Column(nullable = false)
     private float negativePercentage;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     private String timelines;
 }
