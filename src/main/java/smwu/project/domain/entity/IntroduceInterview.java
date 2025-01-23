@@ -21,6 +21,7 @@ public class IntroduceInterview extends BaseTimeEntity {
     @Column(nullable = false)
     private String videoUrl;
 
+    @Setter
     @Column(nullable = false)
     private String title;
 }
