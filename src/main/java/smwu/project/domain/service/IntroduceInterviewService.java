@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import smwu.project.domain.dto.response.IntroduceInterviewListResponseDto;
+import smwu.project.domain.dto.response.IntroduceInterviewResponseDto;
 import smwu.project.domain.entity.IntroduceInterview;
 import smwu.project.domain.entity.User;
 import smwu.project.domain.repository.IntroduceInterviewRepository;
@@ -19,7 +20,7 @@ public class IntroduceInterviewService {
     private final S3Uploader s3Uploader;
 
     @Transactional
-    public String uploadInterviewVideo(User user, MultipartFile file) {
+    public IntroduceInterviewResponseDto uploadInterviewVideo(User user, MultipartFile file) {
         Long userId = user.getId();
         String videoUrl = s3Uploader.uploadIntroduceInterview(file, userId);
 
@@ -30,7 +31,7 @@ public class IntroduceInterviewService {
                 .build();
 
         introduceInterviewRepository.save(introduceInterview);
-        return videoUrl;
+        return IntroduceInterviewResponseDto.of(introduceInterview);
     }
 
     public IntroduceInterviewListResponseDto readIntroduceInterviewList(User user) {

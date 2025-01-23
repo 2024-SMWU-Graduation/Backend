@@ -18,18 +18,18 @@ import smwu.project.global.security.UserDetailsImpl;
 public class InterviewController {
     private final IntroduceInterviewService introduceInterviewService;
 
-    @PostMapping
-    public ResponseEntity<Response<String>> uploadInterviewVideo(
+    @PostMapping("/introduce")
+    public ResponseEntity<Response<IntroduceInterviewResponseDto>> uploadInterviewVideo(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) {
-        String uploadUrl = introduceInterviewService.uploadInterviewVideo(userDetails.getUser(), file);
+        IntroduceInterviewResponseDto responseDto = introduceInterviewService.uploadInterviewVideo(userDetails.getUser(), file);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(Response.of("인터뷰 영상 업로드 완료", uploadUrl));
+                .body(Response.of("인터뷰 영상 업로드 완료", responseDto));
     }
 
-    @GetMapping
+    @GetMapping("/introduce")
     public ResponseEntity<Response<IntroduceInterviewListResponseDto>> readIntroduceInterviewList(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
