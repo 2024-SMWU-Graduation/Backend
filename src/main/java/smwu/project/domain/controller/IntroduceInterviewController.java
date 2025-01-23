@@ -50,4 +50,15 @@ public class IntroduceInterviewController {
                 .status(HttpStatus.OK)
                 .body(Response.of("제목 수정 완료", requestDto.getTitle()));
     }
+
+    @DeleteMapping("/introduce/{interviewId}")
+    public ResponseEntity<Response<Void>> deleteInterview(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long interviewId
+    ) {
+        introduceInterviewService.deleteInterview(userDetails.getUser(), interviewId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Response.of("인터뷰 삭제 완료"));
+    }
 }

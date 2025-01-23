@@ -46,4 +46,11 @@ public class IntroduceInterviewService {
         IntroduceInterview introduceInterview = introduceInterviewRepository.findByIdAndUserOrElseThrow(requestDto.getInterviewId(), user);
         introduceInterview.setTitle(requestDto.getTitle());
     }
+
+    @Transactional
+    public void deleteInterview(User user, Long interviewId) {
+        IntroduceInterview introduceInterview = introduceInterviewRepository.findByIdAndUserOrElseThrow(interviewId, user);
+
+        introduceInterviewRepository.delete(introduceInterview);
+    }
 }
