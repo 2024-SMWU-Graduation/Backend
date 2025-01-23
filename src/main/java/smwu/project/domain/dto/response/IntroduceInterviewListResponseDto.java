@@ -15,7 +15,7 @@ public class IntroduceInterviewListResponseDto {
     public static IntroduceInterviewListResponseDto of(List<IntroduceInterview> interviewList) {
         return IntroduceInterviewListResponseDto.builder()
                 .totalInterview(interviewList.size())
-                .responseDtoList(interviewList.stream().map(IntroduceInterviewResponseDto::new).toList())
+                .responseDtoList(interviewList.stream().map(IntroduceInterviewResponseDto::of).toList())
                 .build();
     }
 }

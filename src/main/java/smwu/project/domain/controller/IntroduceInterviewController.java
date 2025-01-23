@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import smwu.project.domain.dto.request.EditTitleRequestDto;
 import smwu.project.domain.dto.response.IntroduceInterviewListResponseDto;
+import smwu.project.domain.dto.response.IntroduceInterviewResponseDto;
 import smwu.project.domain.service.IntroduceInterviewService;
 import smwu.project.global.response.Response;
 import smwu.project.global.security.UserDetailsImpl;
@@ -18,18 +19,18 @@ import smwu.project.global.security.UserDetailsImpl;
 public class IntroduceInterviewController {
     private final IntroduceInterviewService introduceInterviewService;
 
-    @PostMapping
-    public ResponseEntity<Response<String>> uploadInterviewVideo(
+    @PostMapping("/introduce")
+    public ResponseEntity<Response<IntroduceInterviewResponseDto>> uploadInterviewVideo(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) {
-        String uploadUrl = introduceInterviewService.uploadInterviewVideo(userDetails.getUser(), file);
+        IntroduceInterviewResponseDto responseDto = introduceInterviewService.uploadInterviewVideo(userDetails.getUser(), file);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(Response.of("인터뷰 영상 업로드 완료", uploadUrl));
+                .body(Response.of("인터뷰 영상 업로드 완료", responseDto));
     }
 
-    @GetMapping
+    @GetMapping("/introduce")
     public ResponseEntity<Response<IntroduceInterviewListResponseDto>> readIntroduceInterviewList(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import smwu.project.domain.dto.request.EditTitleRequestDto;
 import smwu.project.domain.dto.response.IntroduceInterviewListResponseDto;
+import smwu.project.domain.dto.response.IntroduceInterviewResponseDto;
 import smwu.project.domain.entity.IntroduceInterview;
 import smwu.project.domain.entity.User;
 import smwu.project.domain.repository.IntroduceInterviewRepository;
@@ -22,7 +23,7 @@ public class IntroduceInterviewService {
     private static final String INTERVIEW_DEFAULT_TITLE = "자기소개 모의 면접";
 
     @Transactional
-    public String uploadInterviewVideo(User user, MultipartFile file) {
+    public IntroduceInterviewResponseDto uploadInterviewVideo(User user, MultipartFile file) {
         Long userId = user.getId();
         String videoUrl = s3Uploader.uploadIntroduceInterview(file, userId);
 
@@ -33,7 +34,7 @@ public class IntroduceInterviewService {
                 .build();
 
         introduceInterviewRepository.save(introduceInterview);
-        return videoUrl;
+        return IntroduceInterviewResponseDto.of(introduceInterview);
     }
 
     public IntroduceInterviewListResponseDto readIntroduceInterviewList(User user) {
@@ -43,13 +44,13 @@ public class IntroduceInterviewService {
 
     @Transactional
     public void editInterviewTitle(User user, EditTitleRequestDto requestDto) {
-        IntroduceInterview introduceInterview = introduceInterviewRepository.findByIdAndUserOrElseThrow(requestDto.getInterviewId(), user);
+        IntroduceInterview introduceInterview = introduceInterviewRepository.findByIdOrElseThrow(user, requestDto.getInterviewId());
         introduceInterview.setTitle(requestDto.getTitle());
     }
 
     @Transactional
     public void deleteInterview(User user, Long interviewId) {
-        IntroduceInterview introduceInterview = introduceInterviewRepository.findByIdAndUserOrElseThrow(interviewId, user);
+        IntroduceInterview introduceInterview = introduceInterviewRepository.findByIdOrElseThrow(user, interviewId);
 
         introduceInterviewRepository.delete(introduceInterview);
     }
