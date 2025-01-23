@@ -14,7 +14,7 @@ import smwu.project.global.security.UserDetailsImpl;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/interview")
+@RequestMapping("/api/interview/introduce")
 public class IntroduceInterviewController {
     private final IntroduceInterviewService introduceInterviewService;
 
@@ -51,7 +51,7 @@ public class IntroduceInterviewController {
                 .body(Response.of("제목 수정 완료", requestDto.getTitle()));
     }
 
-    @DeleteMapping("/introduce/{interviewId}")
+    @DeleteMapping("/{interviewId}")
     public ResponseEntity<Response<Void>> deleteInterview(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long interviewId
