@@ -10,8 +10,10 @@ import smwu.project.domain.dto.response.IntroduceInterviewResponseDto;
 import smwu.project.domain.entity.IntroduceInterview;
 import smwu.project.domain.entity.User;
 import smwu.project.domain.repository.IntroduceInterviewRepository;
+import smwu.project.global.util.FormatUtil;
 import smwu.project.global.util.S3Uploader;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,16 +22,17 @@ public class IntroduceInterviewService {
     private final IntroduceInterviewRepository introduceInterviewRepository;
     private final S3Uploader s3Uploader;
 
-    private static final String INTERVIEW_DEFAULT_TITLE = "자기소개 모의 면접";
+    private static final String INTERVIEW_DEFAULT_TITLE = "자기소개 모의 면접 ";
 
     @Transactional
     public IntroduceInterviewResponseDto uploadInterviewVideo(User user, MultipartFile file) {
         Long userId = user.getId();
         String videoUrl = s3Uploader.uploadIntroduceInterview(file, userId);
+        String tempTitle = INTERVIEW_DEFAULT_TITLE + FormatUtil.parseDateTime(LocalDateTime.now());
 
         IntroduceInterview introduceInterview = IntroduceInterview.builder()
                 .user(user)
-                .title(INTERVIEW_DEFAULT_TITLE)
+                .title(tempTitle)
                 .videoUrl(videoUrl)
                 .build();
 

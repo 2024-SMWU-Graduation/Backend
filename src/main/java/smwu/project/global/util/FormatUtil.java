@@ -1,10 +1,18 @@
 package smwu.project.global.util;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class FormatUtil {
+    public static String parseDateTime(LocalDateTime date) {
+        return date.getYear() + "." +
+                date.getMonthValue() + "." +
+                date.getDayOfMonth() + " " +
+                date.getHour() + ":" +
+                date.getMinute();
+    }
     public static List<String> parseTimelines(String rawData) {
         // 대괄호 제거 및 공백 제거
         String cleanedData = rawData.replaceAll("[\\[\\]]", "").trim();
