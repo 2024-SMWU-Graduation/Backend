@@ -27,16 +27,17 @@ public class IntroduceInterviewService {
     @Transactional
     public IntroduceInterviewResponseDto uploadInterviewVideo(User user, MultipartFile file) {
         Long userId = user.getId();
-        String videoUrl = s3Uploader.uploadIntroduceInterview(file, userId);
         String tempTitle = INTERVIEW_DEFAULT_TITLE + FormatUtil.parseDateTime(LocalDateTime.now());
 
         IntroduceInterview introduceInterview = IntroduceInterview.builder()
                 .user(user)
                 .title(tempTitle)
-                .videoUrl(videoUrl)
                 .build();
 
         introduceInterviewRepository.save(introduceInterview);
+
+        String videoUrl = s3Uploader.uploadIntroduceInterview(file, userId, introduceInterview.getId());
+        introduceInterview.setVideoUrl(videoUrl);
         return IntroduceInterviewResponseDto.of(introduceInterview);
     }
 
@@ -47,13 +48,13 @@ public class IntroduceInterviewService {
 
     @Transactional
     public void editInterviewTitle(User user, EditTitleRequestDto requestDto) {
-        IntroduceInterview introduceInterview = introduceInterviewRepository.findByIdOrElseThrow(user, requestDto.getInterviewId());
+        IntroduceInterview introduceInterview = introduceInterviewRepository.findByUserAndIdOrElseThrow(user, requestDto.getInterviewId());
         introduceInterview.setTitle(requestDto.getTitle());
     }
 
     @Transactional
     public void deleteInterview(User user, Long interviewId) {
-        IntroduceInterview introduceInterview = introduceInterviewRepository.findByIdOrElseThrow(user, interviewId);
+        IntroduceInterview introduceInterview = introduceInterviewRepository.findByUserAndIdOrElseThrow(user, interviewId);
 
         introduceInterviewRepository.delete(introduceInterview);
     }

@@ -22,4 +22,7 @@ public class IntroduceFeedback extends BaseTimeEntity {
 
     @Column(nullable = false, length = 500)
     private String timelines;
+
+    @Setter
+    private String analyzeLink;
 }

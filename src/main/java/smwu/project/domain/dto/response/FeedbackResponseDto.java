@@ -15,6 +15,7 @@ public class FeedbackResponseDto {
     private String videoUrl;
     private float negativePercentage;
     private List<String> timelines;
+    private String analyzeLink;
 
     public static FeedbackResponseDto of(IntroduceFeedback feedback, IntroduceInterview interview) {
         return FeedbackResponseDto.builder()
@@ -22,6 +23,7 @@ public class FeedbackResponseDto {
                 .videoUrl(interview.getVideoUrl())
                 .negativePercentage(feedback.getNegativePercentage())
                 .timelines(FormatUtil.parseTimelines(feedback.getTimelines()))
+                .analyzeLink(feedback.getAnalyzeLink())
                 .build();
     }
 }

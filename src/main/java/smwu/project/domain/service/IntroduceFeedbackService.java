@@ -3,6 +3,7 @@ package smwu.project.domain.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import smwu.project.domain.dto.request.AnalyzeUpdateRequestDto;
 import smwu.project.domain.dto.request.FeedbackRequestDto;
 import smwu.project.domain.dto.response.FeedbackResponseDto;
 import smwu.project.domain.entity.IntroduceFeedback;
@@ -19,7 +20,7 @@ public class IntroduceFeedbackService {
 
     @Transactional
     public void saveInterviewFeedback(User user, FeedbackRequestDto requestDto) {
-        IntroduceInterview introduceInterview = introduceInterviewRepository.findByIdOrElseThrow(user, requestDto.getInterviewId());
+        IntroduceInterview introduceInterview = introduceInterviewRepository.findByUserAndIdOrElseThrow(user, requestDto.getInterviewId());
 
         IntroduceFeedback introduceFeedback = IntroduceFeedback.builder()
                 .introduceInterview(introduceInterview)
@@ -31,8 +32,17 @@ public class IntroduceFeedbackService {
     }
 
     public FeedbackResponseDto readFeedback(User user, Long interviewId) {
-        IntroduceInterview interview = introduceInterviewRepository.findByIdOrElseThrow(user, interviewId);
+        IntroduceInterview interview = introduceInterviewRepository.findByUserAndIdOrElseThrow(user, interviewId);
         IntroduceFeedback feedback = introduceFeedbackRepository.findByInterviewOrElseThrow(interview);
         return FeedbackResponseDto.of(feedback, interview);
+    }
+
+    @Transactional
+    public void updateAnalyzeLink(AnalyzeUpdateRequestDto requestDto) {
+        IntroduceInterview interview = introduceInterviewRepository.findByIdOrElseThrow(requestDto.getInterviewId());
+
+        IntroduceFeedback feedback = introduceFeedbackRepository.findByInterviewOrElseThrow(interview);
+
+        feedback.setAnalyzeLink(requestDto.getAnalyzeLink());
     }
 }

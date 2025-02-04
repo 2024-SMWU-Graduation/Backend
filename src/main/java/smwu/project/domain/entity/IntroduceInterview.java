@@ -18,7 +18,7 @@ public class IntroduceInterview extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false)
+    @Setter
     private String videoUrl;
 
     @Setter

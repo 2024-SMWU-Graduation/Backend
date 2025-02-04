@@ -13,7 +13,12 @@ public interface IntroduceInterviewRepository extends JpaRepository<IntroduceInt
     Optional<IntroduceInterview> findByUserAndId(User user, Long id);
     List<IntroduceInterview> findAllByUser(User user);
 
-    default IntroduceInterview findByIdOrElseThrow(User user, Long id) {
+    default IntroduceInterview findByIdOrElseThrow(Long id) {
+        return findById(id).orElseThrow(()
+        -> new CustomException(InterviewErrorCode.INTERVIEW_NOT_FOUND));
+    }
+
+    default IntroduceInterview findByUserAndIdOrElseThrow(User user, Long id) {
         return findByUserAndId(user, id).orElseThrow(()
                 -> new CustomException(InterviewErrorCode.INTERVIEW_NOT_FOUND));
     }
