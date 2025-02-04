@@ -24,9 +24,10 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String uploadIntroduceInterview(MultipartFile file, Long userId) {
+    public String uploadIntroduceInterview(MultipartFile file, Long userId, Long interviewId) {
         String imageDir = createIntroduceDir(userId); // 파일 저장 경로 생성
-        return uploadVideo(file, imageDir);
+        ObjectMetadata metadata = setMetadataForIntroduceFeedback(file, interviewId);
+        return uploadVideo(file, imageDir, metadata);
     }
 
 //    public String uploadRandomInterview(MultipartFile file, Long storeId, Long userId) {
@@ -34,25 +35,28 @@ public class S3Uploader {
 //        return uploadVideo(file, imageDir);
 //    }
 
-    private String uploadVideo(MultipartFile file, String videoDir) {
+    private String uploadVideo(MultipartFile file, String videoDir, ObjectMetadata metadata) {
         if(!doesFileExist(file)) {
             return null;
         }
         String extension = getValidateVideoExtension(file.getOriginalFilename());
-
         String uploadFileName = videoDir + S3Util.createFileName(extension);
-        return uploadFileToS3(file, uploadFileName);
+        return uploadFileToS3(file, uploadFileName, metadata);
+    }
+
+    private ObjectMetadata setMetadataForIntroduceFeedback(MultipartFile file, Long interviewId) {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(file.getContentType());
+        objectMetadata.addUserMetadata("interview-id", Long.toString(interviewId));
+        return objectMetadata;
     }
 
     /**
      * 실제 S3에 이미지 파일 업로드
      */
-    private String uploadFileToS3(MultipartFile file, String uploadFileName) {
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(file.getContentType());
-
+    private String uploadFileToS3(MultipartFile file, String uploadFileName, ObjectMetadata metadata) {
         try (InputStream inputStream = file.getInputStream()) {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, uploadFileName, inputStream, objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+            amazonS3Client.putObject(new PutObjectRequest(bucket, uploadFileName, inputStream, metadata).withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (Exception e) {
             log.error("이미지 업로드 중 오류가 발생했습니다.", e);
             throw new CustomException(S3ErrorCode.IMAGE_STREAM_ERROR);
