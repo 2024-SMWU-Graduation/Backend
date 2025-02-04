@@ -97,7 +97,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/mail/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll() // 회원가입 접근 허용
                 .requestMatchers(HttpMethod.POST, "/api/auth/reissue").permitAll()
-//                .requestMatchers(HttpMethod.POST, "/api/interview").permitAll() // 임시
+                .requestMatchers(HttpMethod.PATCH, "/api/feedback/introduce").permitAll()
                 .anyRequest().authenticated()
         );
 
