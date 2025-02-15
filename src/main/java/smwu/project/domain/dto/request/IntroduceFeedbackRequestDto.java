@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FeedbackRequestDto {
+public class IntroduceFeedbackRequestDto {
     private Long interviewId;
     private float percentage;
     private List<String> timelines;
