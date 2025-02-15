@@ -45,6 +45,10 @@ public abstract class S3Util {
         return USER_DIR + "/" + userId + "/" + INTRODUCE_DIR + "/" + VIDEO_DIR + "/";
     }
 
+    public static String createRandomDir(Long userId, Long interviewId) {
+        return USER_DIR + "/" + userId + "/" + RANDOM_DIR + "/" + interviewId + "/" + VIDEO_DIR + "/";
+    }
+
     /**
      * 파일명 랜덤 생성
      */

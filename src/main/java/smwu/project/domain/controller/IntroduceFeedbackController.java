@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import smwu.project.domain.dto.request.AnalyzeUpdateRequestDto;
-import smwu.project.domain.dto.request.FeedbackRequestDto;
+import smwu.project.domain.dto.request.IntroduceAnalyzeUpdateRequestDto;
+import smwu.project.domain.dto.request.IntroduceFeedbackRequestDto;
 import smwu.project.domain.dto.response.FeedbackResponseDto;
 import smwu.project.domain.service.IntroduceFeedbackService;
 import smwu.project.global.response.Response;
@@ -15,32 +15,32 @@ import smwu.project.global.security.UserDetailsImpl;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/feedback")
+@RequestMapping("/api/feedback/introduce")
 public class IntroduceFeedbackController {
     private final IntroduceFeedbackService introduceFeedbackService;
 
-    @PostMapping("/introduce")
+    @PostMapping
     public ResponseEntity<Response<Void>> saveInterviewFeedback(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody FeedbackRequestDto requestDto
+            @RequestBody IntroduceFeedbackRequestDto requestDto
     ) {
         introduceFeedbackService.saveInterviewFeedback(userDetails.getUser(), requestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(Response.of("분석 결과가 저장되었습니다."));
+                .body(Response.of("영상 표정 분석 결과가 저장되었습니다."));
     }
 
-    @PatchMapping("/introduce")
+    @PatchMapping
     public ResponseEntity<Response<Void>> updateAnalyzeLink(
-            @RequestBody @Valid AnalyzeUpdateRequestDto requestDto
+            @RequestBody @Valid IntroduceAnalyzeUpdateRequestDto requestDto
     ) {
         introduceFeedbackService.updateAnalyzeLink(requestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(Response.of("답변 내용 분석 결과 저장 완료"));
+                .body(Response.of("답변 내용 분석 결과가 저장되었습니다."));
     }
 
-    @GetMapping("/introduce/{interviewId}")
+    @GetMapping("/{interviewId}")
     public ResponseEntity<Response<FeedbackResponseDto>> readFeedback(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long interviewId

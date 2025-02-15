@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AnalyzeUpdateRequestDto {
+public class CreateRandomQuestionRequestDto {
     private Long interviewId;
-    private String analyzeLink;
+    private String questionData;
 }

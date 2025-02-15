@@ -98,6 +98,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll() // 회원가입 접근 허용
                 .requestMatchers(HttpMethod.POST, "/api/auth/reissue").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/api/feedback/introduce").permitAll()
+                .requestMatchers(HttpMethod.PATCH,  "/api/feedback/random").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/interview/random/question/tail").permitAll()
                 .anyRequest().authenticated()
         );
 

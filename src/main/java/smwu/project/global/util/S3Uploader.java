@@ -11,6 +11,8 @@ import smwu.project.global.exception.CustomException;
 import smwu.project.global.exception.errorCode.S3ErrorCode;
 
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import static smwu.project.global.util.S3Util.*;
 
@@ -25,15 +27,16 @@ public class S3Uploader {
     private String bucket;
 
     public String uploadIntroduceInterview(MultipartFile file, Long userId, Long interviewId) {
-        String imageDir = createIntroduceDir(userId); // 파일 저장 경로 생성
+        String videoDir = createIntroduceDir(userId); // 파일 저장 경로 생성
         ObjectMetadata metadata = setMetadataForIntroduceFeedback(file, interviewId);
-        return uploadVideo(file, imageDir, metadata);
+        return uploadVideo(file, videoDir, metadata);
     }
 
-//    public String uploadRandomInterview(MultipartFile file, Long storeId, Long userId) {
-//        String imageDir = createThemeImageDir(storeId, themeId);
-//        return uploadVideo(file, imageDir);
-//    }
+    public String uploadRandomQuestion(MultipartFile file, Long userId, Long interviewId, Long questionId, String questionData) {
+        String videoDir = createRandomDir(userId, interviewId);
+        ObjectMetadata metadata = setMetadataForRandomFeedback(file, questionId, questionData);
+        return uploadVideo(file, videoDir, metadata);
+    }
 
     private String uploadVideo(MultipartFile file, String videoDir, ObjectMetadata metadata) {
         if(!doesFileExist(file)) {
@@ -42,13 +45,6 @@ public class S3Uploader {
         String extension = getValidateVideoExtension(file.getOriginalFilename());
         String uploadFileName = videoDir + S3Util.createFileName(extension);
         return uploadFileToS3(file, uploadFileName, metadata);
-    }
-
-    private ObjectMetadata setMetadataForIntroduceFeedback(MultipartFile file, Long interviewId) {
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(file.getContentType());
-        objectMetadata.addUserMetadata("interview-id", Long.toString(interviewId));
-        return objectMetadata;
     }
 
     /**
@@ -102,4 +98,19 @@ public class S3Uploader {
         }
     }
 
+    private ObjectMetadata setMetadataForIntroduceFeedback(MultipartFile file, Long interviewId) {
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(file.getContentType());
+        metadata.addUserMetadata("interview-id", Long.toString(interviewId));
+        return metadata;
+    }
+
+    private ObjectMetadata setMetadataForRandomFeedback(MultipartFile file, Long questionId, String questionData) {
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(file.getContentType());
+        metadata.addUserMetadata("question-id", Long.toString(questionId));
+        String encodedQuestion = URLEncoder.encode(questionData, StandardCharsets.UTF_8);
+        metadata.addUserMetadata("content", encodedQuestion);
+        return metadata;
+    }
 }
