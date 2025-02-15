@@ -109,7 +109,6 @@ public class S3Uploader {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(file.getContentType());
         metadata.addUserMetadata("question-id", Long.toString(questionId));
-
         String encodedQuestion = URLEncoder.encode(questionData, StandardCharsets.UTF_8);
         metadata.addUserMetadata("content", encodedQuestion);
         return metadata;
