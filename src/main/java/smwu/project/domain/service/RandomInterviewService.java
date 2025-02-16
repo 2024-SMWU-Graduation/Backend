@@ -3,12 +3,13 @@ package smwu.project.domain.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import smwu.project.domain.dto.response.CreateRandomInterviewResponseDto;
+import smwu.project.domain.dto.response.RandomInterviewListResponseDto;
 import smwu.project.domain.entity.RandomInterview;
 import smwu.project.domain.entity.User;
 import smwu.project.domain.enums.InterviewStatus;
 import smwu.project.domain.repository.RandomInterviewRepository;
 
-import java.util.Random;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,5 +27,10 @@ public class RandomInterviewService {
         RandomInterview savedInterview = randomInterviewRepository.save(randomInterview);
 
         return CreateRandomInterviewResponseDto.of(savedInterview);
+    }
+
+    public RandomInterviewListResponseDto readRandomInterviewList(User user) {
+        List<RandomInterview> interviewList = randomInterviewRepository.findAllByUser(user);
+        return RandomInterviewListResponseDto.of(interviewList);
     }
 }
