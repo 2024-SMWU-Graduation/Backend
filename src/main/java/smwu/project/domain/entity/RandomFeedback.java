@@ -13,7 +13,7 @@ public class RandomFeedback extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
     @JoinColumn(name = "random_question_id", nullable = false)
     private RandomQuestion randomQuestion;
 

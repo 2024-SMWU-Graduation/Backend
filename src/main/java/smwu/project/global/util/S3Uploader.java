@@ -63,12 +63,12 @@ public class S3Uploader {
     /**
      * DB에 저장된 이미지 링크로 S3의 단일 이미지 파일 삭제
      */
-    public void deleteFileFromS3(String imagePath) {
-        if(imagePath == null) {
+    public void deleteFileFromS3(String videoLink) {
+        if(videoLink == null) {
             return;
         }
         String splitStr = ".com/";
-        String fileName = imagePath.substring(imagePath.lastIndexOf(splitStr) + splitStr.length());
+        String fileName = videoLink.substring(videoLink.lastIndexOf(splitStr) + splitStr.length());
 
         amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
     }
