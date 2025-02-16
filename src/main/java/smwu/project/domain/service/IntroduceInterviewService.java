@@ -22,16 +22,15 @@ public class IntroduceInterviewService {
     private final IntroduceInterviewRepository introduceInterviewRepository;
     private final S3Uploader s3Uploader;
 
-    private static final String INTERVIEW_DEFAULT_TITLE = "자기소개 모의 면접 ";
+    private static final String INTERVIEW_DEFAULT_TITLE = "자기소개 모의 면접";
 
     @Transactional
     public IntroduceInterviewResponseDto uploadInterviewVideo(User user, MultipartFile file) {
         Long userId = user.getId();
-        String tempTitle = INTERVIEW_DEFAULT_TITLE + FormatUtil.parseDateTime(LocalDateTime.now());
 
         IntroduceInterview introduceInterview = IntroduceInterview.builder()
                 .user(user)
-                .title(tempTitle)
+                .title(INTERVIEW_DEFAULT_TITLE)
                 .build();
 
         introduceInterviewRepository.save(introduceInterview);
