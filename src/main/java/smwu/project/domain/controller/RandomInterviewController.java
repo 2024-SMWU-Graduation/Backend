@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import smwu.project.domain.dto.request.EditTitleRequestDto;
 import smwu.project.domain.dto.response.CreateRandomInterviewResponseDto;
 import smwu.project.domain.dto.response.RandomInterviewListResponseDto;
 import smwu.project.domain.service.RandomInterviewService;
@@ -36,5 +34,27 @@ public class RandomInterviewController {
         RandomInterviewListResponseDto responseDto = randomInterviewService.readRandomInterviewList(userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(Response.of("직무별 면접 리스트 조회 완료", responseDto));
+    }
+
+    @PatchMapping("/title")
+    public ResponseEntity<Response<String>> editInterviewTitle(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody EditTitleRequestDto requestDto
+    ) {
+        randomInterviewService.editInterviewTitle(userDetails.getUser(), requestDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Response.of("제목 수정 완료", requestDto.getTitle()));
+    }
+
+    @DeleteMapping("/{interviewId}")
+    public ResponseEntity<Response<Void>> deleteInterview(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long interviewId
+    ) {
+        randomInterviewService.deleteInterview(userDetails.getUser(), interviewId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Response.of("인터뷰 삭제 완료"));
     }
 }

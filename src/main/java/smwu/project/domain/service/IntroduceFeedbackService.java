@@ -43,6 +43,6 @@ public class IntroduceFeedbackService {
 
         IntroduceFeedback feedback = introduceFeedbackRepository.findByInterviewOrElseThrow(interview);
 
-        feedback.setAnalyzeLink(requestDto.getAnalyzeLink());
+        feedback.setAnalyzeUrl(requestDto.getAnalyzeLink());
     }
 }

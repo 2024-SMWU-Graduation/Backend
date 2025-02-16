@@ -24,5 +24,5 @@ public class IntroduceFeedback extends BaseTimeEntity {
     private String timelines;
 
     @Setter
-    private String analyzeLink;
+    private String analyzeUrl;
 }
