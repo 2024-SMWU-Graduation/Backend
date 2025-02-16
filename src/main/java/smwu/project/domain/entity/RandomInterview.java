@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import smwu.project.domain.enums.InterviewStatus;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -19,6 +21,9 @@ public class RandomInterview extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "randomInterview", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RandomQuestion> randomQuestions;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)

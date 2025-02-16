@@ -18,6 +18,9 @@ public class IntroduceInterview extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToOne(mappedBy = "introduceInterview", cascade = CascadeType.ALL, orphanRemoval = true)
+    private IntroduceFeedback introduceFeedback;
+
     @Setter
     private String videoUrl;
 
