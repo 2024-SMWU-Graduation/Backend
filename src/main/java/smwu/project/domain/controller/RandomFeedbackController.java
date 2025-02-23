@@ -35,4 +35,12 @@ public class RandomFeedbackController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(Response.of("답변 내용 분석 결과가 저장되었습니다."));
     }
+
+//    @GetMapping
+//    public ResponseEntity<Response<RandomFeedbackListResponseDto>> readFeedbackList(
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+//            @RequestParam Long interviewId
+//    ) {
+//
+//    }
 }

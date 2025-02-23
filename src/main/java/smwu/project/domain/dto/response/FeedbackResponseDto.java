@@ -14,7 +14,7 @@ public class FeedbackResponseDto {
     private Long feedbackId;
     private String videoUrl;
     private float negativePercentage;
-    private List<String> timelines;
+    private List<FeedbackTimelineResponseDto> timelines;
     private String analyzeUrl;
 
     public static FeedbackResponseDto of(IntroduceFeedback feedback, IntroduceInterview interview) {
@@ -22,7 +22,7 @@ public class FeedbackResponseDto {
                 .feedbackId(feedback.getId())
                 .videoUrl(interview.getVideoUrl())
                 .negativePercentage(feedback.getNegativePercentage())
-                .timelines(FormatUtil.parseTimelines(feedback.getTimelines()))
+                .timelines(feedback.getTimelines().stream().map(FeedbackTimelineResponseDto::of).toList())
                 .analyzeUrl(feedback.getAnalyzeUrl())
                 .build();
     }

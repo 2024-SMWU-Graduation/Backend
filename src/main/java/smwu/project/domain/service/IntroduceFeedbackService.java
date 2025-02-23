@@ -5,12 +5,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import smwu.project.domain.dto.request.IntroduceAnalyzeUpdateRequestDto;
 import smwu.project.domain.dto.request.IntroduceFeedbackRequestDto;
+import smwu.project.domain.dto.request.FeedbackTimelineRequestDto;
 import smwu.project.domain.dto.response.FeedbackResponseDto;
+import smwu.project.domain.entity.FeedbackTimeline;
 import smwu.project.domain.entity.IntroduceFeedback;
 import smwu.project.domain.entity.IntroduceInterview;
 import smwu.project.domain.entity.User;
 import smwu.project.domain.repository.IntroduceFeedbackRepository;
 import smwu.project.domain.repository.IntroduceInterviewRepository;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +26,21 @@ public class IntroduceFeedbackService {
     public void saveInterviewFeedback(User user, IntroduceFeedbackRequestDto requestDto) {
         IntroduceInterview introduceInterview = introduceInterviewRepository.findByUserAndIdOrElseThrow(user, requestDto.getInterviewId());
 
-        IntroduceFeedback introduceFeedback = IntroduceFeedback.builder()
-                .introduceInterview(introduceInterview)
-                .negativePercentage(requestDto.getPercentage())
-                .timelines(requestDto.getTimelines().toString())
-                .build();
+        List<FeedbackTimeline> timelines = requestDto.getTimelines().stream()
+                .map(FeedbackTimelineRequestDto::toEntity)
+                .toList();
+
+        IntroduceFeedback introduceFeedback = new IntroduceFeedback(
+                introduceInterview,
+                requestDto.getNegativePercentage(),
+                timelines
+        );
+
+//        IntroduceFeedback introduceFeedback = IntroduceFeedback.builder()
+//                .introduceInterview(introduceInterview)
+//                .negativePercentage(requestDto.getNegativePercentage())
+//                .timelines(timelines)
+//                .build();
 
         introduceFeedbackRepository.save(introduceFeedback);
     }
@@ -40,9 +54,7 @@ public class IntroduceFeedbackService {
     @Transactional
     public void updateAnalyzeLink(IntroduceAnalyzeUpdateRequestDto requestDto) {
         IntroduceInterview interview = introduceInterviewRepository.findByIdOrElseThrow(requestDto.getInterviewId());
-
         IntroduceFeedback feedback = introduceFeedbackRepository.findByInterviewOrElseThrow(interview);
-
         feedback.setAnalyzeUrl(requestDto.getAnalyzeLink());
     }
 }
