@@ -48,7 +48,7 @@ public class IntroduceFeedbackService {
     public FeedbackResponseDto readFeedback(User user, Long interviewId) {
         IntroduceInterview interview = introduceInterviewRepository.findByUserAndIdOrElseThrow(user, interviewId);
         IntroduceFeedback feedback = introduceFeedbackRepository.findByInterviewOrElseThrow(interview);
-        return FeedbackResponseDto.of(feedback, interview);
+        return FeedbackResponseDto.of(feedback, interview.getVideoUrl());
     }
 
     @Transactional
