@@ -3,9 +3,6 @@ package smwu.project.domain.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import smwu.project.domain.entity.Feedback;
-import smwu.project.domain.entity.IntroduceFeedback;
-import smwu.project.domain.entity.IntroduceInterview;
-import smwu.project.global.util.FormatUtil;
 
 import java.util.List;
 

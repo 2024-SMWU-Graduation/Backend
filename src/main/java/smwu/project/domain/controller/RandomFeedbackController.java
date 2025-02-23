@@ -45,6 +45,6 @@ public class RandomFeedbackController {
         RandomFeedbackListResponseDto responseDto = randomFeedbackService.readFeedbackList(userDetails.getUser(), interviewId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(Response.of("피드백 목록 조회가 완료되었습니다."));
+                .body(Response.of("피드백 목록 조회가 완료되었습니다.", responseDto));
     }
 }
