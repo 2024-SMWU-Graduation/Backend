@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import smwu.project.domain.dto.request.RandomAnalyzeUpdateRequestDto;
 import smwu.project.domain.dto.request.RandomFeedbackRequestDto;
+import smwu.project.domain.dto.response.RandomFeedbackListResponseDto;
 import smwu.project.domain.service.RandomFeedbackService;
 import smwu.project.global.response.Response;
 import smwu.project.global.security.UserDetailsImpl;
@@ -36,11 +37,14 @@ public class RandomFeedbackController {
                 .body(Response.of("답변 내용 분석 결과가 저장되었습니다."));
     }
 
-//    @GetMapping
-//    public ResponseEntity<Response<RandomFeedbackListResponseDto>> readFeedbackList(
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
-//            @RequestParam Long interviewId
-//    ) {
-//
-//    }
+    @GetMapping
+    public ResponseEntity<Response<RandomFeedbackListResponseDto>> readFeedbackList(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam Long interviewId
+    ) {
+        RandomFeedbackListResponseDto responseDto = randomFeedbackService.readFeedbackList(userDetails.getUser(), interviewId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Response.of("피드백 목록 조회가 완료되었습니다."));
+    }
 }

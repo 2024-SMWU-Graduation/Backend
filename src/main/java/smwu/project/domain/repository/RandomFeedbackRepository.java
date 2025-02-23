@@ -6,6 +6,7 @@ import smwu.project.domain.entity.RandomQuestion;
 import smwu.project.global.exception.CustomException;
 import smwu.project.global.exception.errorCode.FeedbackErrorCode;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RandomFeedbackRepository extends JpaRepository<RandomFeedback, Long> {
