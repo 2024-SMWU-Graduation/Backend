@@ -1,8 +1,6 @@
 package smwu.project.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import smwu.project.domain.entity.RandomFeedback;
 import smwu.project.domain.entity.RandomQuestion;
 import smwu.project.global.exception.CustomException;
