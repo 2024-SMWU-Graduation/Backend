@@ -17,6 +17,7 @@ public class RandomQuestion extends BaseTimeEntity {
     @JoinColumn(name = "random_interview_id", nullable = false)
     private RandomInterview randomInterview;
 
+    @Setter
     @OneToOne(mappedBy = "randomQuestion", cascade = CascadeType.ALL, orphanRemoval = true)
     private RandomFeedback randomFeedback;
 

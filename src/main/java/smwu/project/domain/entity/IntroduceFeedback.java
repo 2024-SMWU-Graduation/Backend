@@ -3,26 +3,24 @@ package smwu.project.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class IntroduceFeedback extends BaseTimeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class IntroduceFeedback extends Feedback {
     @OneToOne
     @JoinColumn(name = "introduce_interview_id")
     private IntroduceInterview introduceInterview;
 
-    @Column(nullable = false)
-    private float negativePercentage;
+    public IntroduceFeedback(IntroduceInterview interview, float negativePercentage, List<FeedbackTimeline> feedbackTimelines) {
+        super(negativePercentage, feedbackTimelines);
+        this.introduceInterview = interview;
+    }
 
-    @Column(nullable = false, length = 500)
-    private String timelines;
-
-    @Setter
-    private String analyzeLink;
+//    public static IntroduceFeedback of(IntroduceInterview introduceInterview, IntroduceFeedbackRequestDto requestDto) {
+//        return new IntroduceFeedback(
+//                requestDto.getNegativePercentage(),
+//        )
+//    }
 }

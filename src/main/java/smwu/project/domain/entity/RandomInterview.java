@@ -16,13 +16,14 @@ public class RandomInterview extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "randomInterview", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "randomInterview", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RandomQuestion> randomQuestions;
 
     @Column(nullable = false)

@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import smwu.project.domain.dto.request.RandomAnalyzeUpdateRequestDto;
 import smwu.project.domain.dto.request.RandomFeedbackRequestDto;
+import smwu.project.domain.dto.response.RandomFeedbackListResponseDto;
 import smwu.project.domain.service.RandomFeedbackService;
 import smwu.project.global.response.Response;
 import smwu.project.global.security.UserDetailsImpl;
@@ -24,7 +25,7 @@ public class RandomFeedbackController {
     ) {
         randomFeedbackService.saveQuestionFeedback(userDetails.getUser(), requestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(Response.of("직무별 면접 영상 표정 분석 결과가 저장되었습니다."));
+                .body(Response.of("직무별 면접 표정 분석 결과 저장 완료"));
     }
 
     @PatchMapping
@@ -33,6 +34,16 @@ public class RandomFeedbackController {
     ) {
         randomFeedbackService.updateAnalyzeLink(requestDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(Response.of("답변 내용 분석 결과가 저장되었습니다."));
+                .body(Response.of("답변 내용 분석 결과 저장 완료"));
+    }
+
+    @GetMapping
+    public ResponseEntity<Response<RandomFeedbackListResponseDto>> readFeedbackList(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam Long interviewId
+    ) {
+        RandomFeedbackListResponseDto responseDto = randomFeedbackService.readFeedbackList(userDetails.getUser(), interviewId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Response.of("직무별 면접 피드백 조회 완료", responseDto));
     }
 }

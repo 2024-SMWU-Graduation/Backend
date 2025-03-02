@@ -10,6 +10,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class IntroduceFeedbackRequestDto {
     private Long interviewId;
-    private float percentage;
-    private List<String> timelines;
+    private float negativePercentage;
+    private List<FeedbackTimelineRequestDto> timelines;
 }

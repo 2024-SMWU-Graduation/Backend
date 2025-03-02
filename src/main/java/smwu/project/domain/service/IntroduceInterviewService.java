@@ -16,6 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class IntroduceInterviewService {
     private final IntroduceInterviewRepository introduceInterviewRepository;
     private final S3Uploader s3Uploader;
@@ -53,7 +54,6 @@ public class IntroduceInterviewService {
     public void deleteInterview(User user, Long interviewId) {
         IntroduceInterview introduceInterview = introduceInterviewRepository.findByUserAndIdOrElseThrow(user, interviewId);
         s3Uploader.deleteFileFromS3(introduceInterview.getVideoUrl());
-
         introduceInterviewRepository.delete(introduceInterview);
     }
 }

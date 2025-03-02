@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface RandomFeedbackRepository extends JpaRepository<RandomFeedback, Long> {
     Optional<RandomFeedback> findByRandomQuestion(RandomQuestion randomQuestion);
+
     default RandomFeedback findByRandomQuestionOrElseThrow(RandomQuestion randomQuestion) {
         return findByRandomQuestion(randomQuestion).orElseThrow(() ->
                 new CustomException(FeedbackErrorCode.FEEDBACK_NOT_FOUND));
