@@ -17,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RandomFeedbackService {
     private final RandomInterviewRepository randomInterviewRepository;
     private final RandomFeedbackRepository randomFeedbackRepository;
@@ -36,6 +37,7 @@ public class RandomFeedbackService {
                 timelines
         );
 
+        randomQuestion.setRandomFeedback(randomFeedback);
         randomFeedbackRepository.save(randomFeedback);
     }
 
@@ -54,10 +56,11 @@ public class RandomFeedbackService {
         List<RandomFeedback> feedbacks = new ArrayList<>();
 
         for(RandomQuestion question : questions) {
-            RandomFeedback randomFeedback = randomFeedbackRepository.findByRandomQuestionOrElseThrow(question);
-            feedbacks.add(randomFeedback);
+            if(question.getVideoUrl() != null) {
+                RandomFeedback randomFeedback = randomFeedbackRepository.findByRandomQuestionOrElseThrow(question);
+                feedbacks.add(randomFeedback);
+            }
         }
-
         return RandomFeedbackListResponseDto.of(randomInterview, feedbacks);
     }
 }

@@ -20,6 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RandomQuestionService {
     private final RandomQuestionRepository randomQuestionRepository;
     private final RandomInterviewRepository randomInterviewRepository;
@@ -36,9 +37,9 @@ public class RandomQuestionService {
                 .randomInterview(randomInterview)
                 .questionData(questionData)
                 .build();
+        randomInterview.getRandomQuestions().add(randomQuestion);
 
         randomQuestionRepository.save(randomQuestion);
-
         String videoUrl = s3Uploader.uploadRandomQuestion(file, userId, randomInterview.getId(), randomQuestion.getId(), questionData);
         randomQuestion.setVideoUrl(videoUrl);
 
@@ -61,6 +62,7 @@ public class RandomQuestionService {
                 .randomInterview(randomInterview)
                 .questionData(requestDto.getQuestionData())
                 .build();
+        randomInterview.getRandomQuestions().add(randomQuestion);
 
         randomQuestionRepository.save(randomQuestion);
 //        return true;

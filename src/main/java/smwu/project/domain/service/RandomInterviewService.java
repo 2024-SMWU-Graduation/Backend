@@ -15,10 +15,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RandomInterviewService {
     private final RandomInterviewRepository randomInterviewRepository;
     private final static String RANDOM_INTERVIEW_TITLE = "직무별 꼬리 질문 면접";
 
+    @Transactional
     public CreateRandomInterviewResponseDto createRandomInterview(User user) {
         RandomInterview randomInterview = RandomInterview.builder()
                 .user(user)

@@ -25,7 +25,7 @@ public class RandomFeedbackController {
     ) {
         randomFeedbackService.saveQuestionFeedback(userDetails.getUser(), requestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(Response.of("직무별 면접 영상 표정 분석 결과가 저장되었습니다."));
+                .body(Response.of("직무별 면접 표정 분석 결과 저장 완료"));
     }
 
     @PatchMapping
@@ -34,7 +34,7 @@ public class RandomFeedbackController {
     ) {
         randomFeedbackService.updateAnalyzeLink(requestDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(Response.of("답변 내용 분석 결과가 저장되었습니다."));
+                .body(Response.of("답변 내용 분석 결과 저장 완료"));
     }
 
     @GetMapping
@@ -43,8 +43,7 @@ public class RandomFeedbackController {
             @RequestParam Long interviewId
     ) {
         RandomFeedbackListResponseDto responseDto = randomFeedbackService.readFeedbackList(userDetails.getUser(), interviewId);
-
         return ResponseEntity.status(HttpStatus.OK)
-                .body(Response.of("피드백 목록 조회가 완료되었습니다.", responseDto));
+                .body(Response.of("직무별 면접 피드백 조회 완료", responseDto));
     }
 }

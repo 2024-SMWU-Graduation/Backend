@@ -16,6 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class IntroduceInterviewService {
     private final IntroduceInterviewRepository introduceInterviewRepository;
     private final S3Uploader s3Uploader;

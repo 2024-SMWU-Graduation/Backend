@@ -27,7 +27,7 @@ public class IntroduceFeedbackController {
         introduceFeedbackService.saveInterviewFeedback(userDetails.getUser(), requestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(Response.of("영상 표정 분석 결과가 저장되었습니다."));
+                .body(Response.of("자기소개 면접 표정 분석 결과 저장"));
     }
 
     @PatchMapping
@@ -35,9 +35,8 @@ public class IntroduceFeedbackController {
             @RequestBody @Valid IntroduceAnalyzeUpdateRequestDto requestDto
     ) {
         introduceFeedbackService.updateAnalyzeLink(requestDto);
-
         return ResponseEntity.status(HttpStatus.OK)
-                .body(Response.of("답변 내용 분석 결과가 저장되었습니다."));
+                .body(Response.of("답변 내용 분석 결과 저장"));
     }
 
     @GetMapping("/{interviewId}")
@@ -48,6 +47,6 @@ public class IntroduceFeedbackController {
         FeedbackResponseDto responseDto = introduceFeedbackService.readFeedback(userDetails.getUser(), interviewId);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(Response.of("분석 결과 조회가 완료되었습니다.", responseDto));
+                .body(Response.of("자기소개 피드백 결과 조회 완료", responseDto));
     }
 }

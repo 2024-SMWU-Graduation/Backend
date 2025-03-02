@@ -23,7 +23,7 @@ public class RandomInterview extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "randomInterview", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "randomInterview", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RandomQuestion> randomQuestions;
 
     @Column(nullable = false)
