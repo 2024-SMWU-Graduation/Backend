@@ -33,7 +33,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler  {
         response.addHeader(JwtProvider.AUTHORIZATION_HEADER, accessToken);
         response.addHeader(JwtProvider.REFRESH_HEADER, refreshToken);
 
-        String frontendRedirectUrl = "http://localhost:3000/social-success";
+        String frontendRedirectUrl = "https://easy-terview.site/social-success";
         response.sendRedirect(frontendRedirectUrl + "?accessToken=" + accessToken +
                 "&refreshToken=" + refreshToken);
 
