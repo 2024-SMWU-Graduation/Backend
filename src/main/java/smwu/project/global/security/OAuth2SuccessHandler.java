@@ -1,17 +1,14 @@
 package smwu.project.global.security;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import smwu.project.domain.entity.User;
 import smwu.project.global.jwt.JwtProvider;
 import smwu.project.global.jwt.RefreshTokenService;
-import smwu.project.global.util.ResponseUtil;
 
 import java.io.IOException;
 
@@ -33,7 +30,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler  {
         response.addHeader(JwtProvider.AUTHORIZATION_HEADER, accessToken);
         response.addHeader(JwtProvider.REFRESH_HEADER, refreshToken);
 
-        String frontendRedirectUrl = "http://localhost:3000/social-success";
+        String frontendRedirectUrl = "https://easy-terview.site/social-success";
         response.sendRedirect(frontendRedirectUrl + "?accessToken=" + accessToken +
                 "&refreshToken=" + refreshToken);
 
