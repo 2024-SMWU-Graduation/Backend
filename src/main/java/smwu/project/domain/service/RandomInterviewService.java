@@ -33,7 +33,7 @@ public class RandomInterviewService {
     }
 
     public RandomInterviewListResponseDto readRandomInterviewList(User user) {
-        List<RandomInterview> interviewList = randomInterviewRepository.findAllByUser(user);
+        List<RandomInterview> interviewList = randomInterviewRepository.findAllByUserAndInterviewStatusNot(user, InterviewStatus.TEMP);
         return RandomInterviewListResponseDto.of(interviewList);
     }
 
