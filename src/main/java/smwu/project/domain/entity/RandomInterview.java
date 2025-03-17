@@ -29,4 +29,12 @@ public class RandomInterview extends BaseTimeEntity {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private InterviewStatus interviewStatus;
+
+    public void updateInterviewStatusToRequested() {
+        this.interviewStatus = InterviewStatus.REQUESTED;
+    }
+
+    public void updateInterviewStatusToCompleted() {
+        this.interviewStatus = InterviewStatus.COMPLETED;
+    }
 }

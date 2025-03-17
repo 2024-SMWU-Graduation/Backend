@@ -71,9 +71,11 @@ public class RandomQuestionService {
     @Transactional
     public RandomQuestionResponseDto uploadTailQuestion(User user, Long questionId, MultipartFile file) {
         RandomQuestion randomQuestion = randomQuestionRepository.findByIdOrElseThrow(questionId);
+        RandomInterview interview = randomQuestion.getRandomInterview();
 
         String videoUrl = s3Uploader.uploadRandomQuestion(file, user.getId(), randomQuestion.getRandomInterview().getId(), randomQuestion.getId(), randomQuestion.getQuestionData());
         randomQuestion.setVideoUrl(videoUrl);
+
         return RandomQuestionResponseDto.of(randomQuestion);
     }
 

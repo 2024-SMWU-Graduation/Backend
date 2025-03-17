@@ -33,6 +33,5 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler  {
         String frontendRedirectUrl = "https://easy-terview.site/social-success";
         response.sendRedirect(frontendRedirectUrl + "?accessToken=" + accessToken +
                 "&refreshToken=" + refreshToken);
-
     }
 }

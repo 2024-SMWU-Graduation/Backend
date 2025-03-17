@@ -29,7 +29,6 @@ public class RandomInterviewService {
                 .build();
 
         RandomInterview savedInterview = randomInterviewRepository.save(randomInterview);
-
         return CreateRandomInterviewResponseDto.of(savedInterview);
     }
 

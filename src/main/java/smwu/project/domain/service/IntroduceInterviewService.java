@@ -9,6 +9,7 @@ import smwu.project.domain.dto.response.IntroduceInterviewListResponseDto;
 import smwu.project.domain.dto.response.IntroduceInterviewResponseDto;
 import smwu.project.domain.entity.IntroduceInterview;
 import smwu.project.domain.entity.User;
+import smwu.project.domain.enums.InterviewStatus;
 import smwu.project.domain.repository.IntroduceInterviewRepository;
 import smwu.project.global.util.S3Uploader;
 
@@ -30,6 +31,7 @@ public class IntroduceInterviewService {
         IntroduceInterview introduceInterview = IntroduceInterview.builder()
                 .user(user)
                 .title(INTERVIEW_DEFAULT_TITLE)
+                .interviewStatus(InterviewStatus.REQUESTED)
                 .build();
 
         introduceInterviewRepository.save(introduceInterview);
