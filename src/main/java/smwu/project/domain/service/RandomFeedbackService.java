@@ -11,6 +11,8 @@ import smwu.project.domain.entity.*;
 import smwu.project.domain.repository.RandomFeedbackRepository;
 import smwu.project.domain.repository.RandomInterviewRepository;
 import smwu.project.domain.repository.RandomQuestionRepository;
+import smwu.project.global.exception.CustomException;
+import smwu.project.global.exception.errorCode.InterviewErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,8 @@ public class RandomFeedbackService {
     @Transactional
     public void saveQuestionFeedback(User user, RandomFeedbackRequestDto requestDto) {
         RandomQuestion randomQuestion = randomQuestionRepository.findByIdOrElseThrow(requestDto.getQuestionId());
+        RandomInterview randomInterview = randomQuestion.getRandomInterview();
+        checkUserPermission(randomInterview, user);
 
         List<FeedbackTimeline> timelines = requestDto.getTimelines().stream()
                 .map(FeedbackTimelineRequestDto::toEntity)
@@ -39,6 +43,7 @@ public class RandomFeedbackService {
 
         randomQuestion.setRandomFeedback(randomFeedback);
         randomFeedbackRepository.save(randomFeedback);
+        randomInterview.updateInterviewStatusToRequested();
     }
 
     @Transactional
@@ -46,6 +51,9 @@ public class RandomFeedbackService {
         RandomQuestion randomQuestion = randomQuestionRepository.findByIdOrElseThrow(requestDto.getQuestionId());
         RandomFeedback randomFeedback = randomFeedbackRepository.findByRandomQuestionOrElseThrow(randomQuestion);
         randomFeedback.setAnalyzeUrl(requestDto.getAnalyzeLink());
+
+        RandomInterview randomInterview = randomQuestion.getRandomInterview();
+        randomInterview.updateInterviewStatusToCompleted();
     }
 
 
@@ -62,5 +70,11 @@ public class RandomFeedbackService {
             }
         }
         return RandomFeedbackListResponseDto.of(randomInterview, feedbacks);
+    }
+
+    private void checkUserPermission(RandomInterview randomInterview, User user) {
+        if(!randomInterview.getUser().equals(user)) {
+            throw new CustomException(InterviewErrorCode.INTERVIEW_UNAUTHORIZED_ACCESS);
+        }
     }
 }

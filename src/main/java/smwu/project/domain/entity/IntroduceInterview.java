@@ -2,6 +2,7 @@ package smwu.project.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import smwu.project.domain.enums.InterviewStatus;
 
 
 @Entity
@@ -27,4 +28,12 @@ public class IntroduceInterview extends BaseTimeEntity {
     @Setter
     @Column(nullable = false)
     private String title;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false)
+    private InterviewStatus interviewStatus;
+
+    public void updateInterviewStatusToCompleted() {
+        this.interviewStatus = InterviewStatus.COMPLETED;
+    }
 }

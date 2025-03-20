@@ -25,24 +25,17 @@ public class IntroduceFeedbackService {
 
     @Transactional
     public void saveInterviewFeedback(User user, IntroduceFeedbackRequestDto requestDto) {
-        IntroduceInterview introduceInterview = introduceInterviewRepository.findByUserAndIdOrElseThrow(user, requestDto.getInterviewId());
+        IntroduceInterview interview = introduceInterviewRepository.findByUserAndIdOrElseThrow(user, requestDto.getInterviewId());
 
         List<FeedbackTimeline> timelines = requestDto.getTimelines().stream()
                 .map(FeedbackTimelineRequestDto::toEntity)
                 .toList();
 
         IntroduceFeedback introduceFeedback = new IntroduceFeedback(
-                introduceInterview,
+                interview,
                 requestDto.getNegativePercentage(),
                 timelines
         );
-
-//        IntroduceFeedback introduceFeedback = IntroduceFeedback.builder()
-//                .introduceInterview(introduceInterview)
-//                .negativePercentage(requestDto.getNegativePercentage())
-//                .timelines(timelines)
-//                .build();
-
         introduceFeedbackRepository.save(introduceFeedback);
     }
 
@@ -57,5 +50,6 @@ public class IntroduceFeedbackService {
         IntroduceInterview interview = introduceInterviewRepository.findByIdOrElseThrow(requestDto.getInterviewId());
         IntroduceFeedback feedback = introduceFeedbackRepository.findByInterviewOrElseThrow(interview);
         feedback.setAnalyzeUrl(requestDto.getAnalyzeLink());
+        interview.updateInterviewStatusToCompleted();
     }
 }

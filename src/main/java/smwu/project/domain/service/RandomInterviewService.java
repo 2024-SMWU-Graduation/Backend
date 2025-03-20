@@ -29,12 +29,11 @@ public class RandomInterviewService {
                 .build();
 
         RandomInterview savedInterview = randomInterviewRepository.save(randomInterview);
-
         return CreateRandomInterviewResponseDto.of(savedInterview);
     }
 
     public RandomInterviewListResponseDto readRandomInterviewList(User user) {
-        List<RandomInterview> interviewList = randomInterviewRepository.findAllByUser(user);
+        List<RandomInterview> interviewList = randomInterviewRepository.findAllByUserAndInterviewStatusNotOrderByCreatedAtDesc(user, InterviewStatus.TEMP);
         return RandomInterviewListResponseDto.of(interviewList);
     }
 

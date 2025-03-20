@@ -24,6 +24,7 @@ spring:
     properties:
       mail:
         smtp:
+          auth: true
           starttls:
             enable: true # TLS 보호 연결을 활성화
   servlet:
