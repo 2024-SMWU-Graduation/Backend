@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface IntroduceInterviewRepository extends JpaRepository<IntroduceInterview, Long> {
     Optional<IntroduceInterview> findByUserAndId(User user, Long id);
     List<IntroduceInterview> findAllByUserAndInterviewStatusNot(User user, InterviewStatus interviewStatus);
+    List<IntroduceInterview> findAllByUserAndInterviewStatusNotOrderByCreatedAtDesc(User user, InterviewStatus interviewStatus);
 
     default IntroduceInterview findByIdOrElseThrow(Long id) {
         return findById(id).orElseThrow(()

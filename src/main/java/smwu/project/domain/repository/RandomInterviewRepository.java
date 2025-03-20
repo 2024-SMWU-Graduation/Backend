@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface RandomInterviewRepository extends JpaRepository<RandomInterview, Long> {
     Optional<RandomInterview> findByUserAndId(User user, Long interviewId);
     List<RandomInterview> findAllByUserAndInterviewStatusNot(User user, InterviewStatus interviewStatus);
+    List<RandomInterview> findAllByUserAndInterviewStatusNotOrderByCreatedAtDesc(User user, InterviewStatus interviewStatus);
 
     default RandomInterview findByIdOrElseThrow(Long id) {
         return findById(id).orElseThrow(() ->

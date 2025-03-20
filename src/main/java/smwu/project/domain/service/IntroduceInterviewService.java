@@ -42,7 +42,7 @@ public class IntroduceInterviewService {
     }
 
     public IntroduceInterviewListResponseDto readIntroduceInterviewList(User user) {
-        List<IntroduceInterview> interviewList =  introduceInterviewRepository.findAllByUserAndInterviewStatusNot(user, InterviewStatus.TEMP);
+        List<IntroduceInterview> interviewList =  introduceInterviewRepository.findAllByUserAndInterviewStatusNotOrderByCreatedAtDesc(user, InterviewStatus.TEMP);
         return IntroduceInterviewListResponseDto.of(interviewList);
     }
 
