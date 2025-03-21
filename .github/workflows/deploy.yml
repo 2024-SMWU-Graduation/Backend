@@ -1,0 +1,82 @@
+name: Docker Blue-Green Deployment
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 현재 Repository의 코드를 Github Actions 실행 환경으로 다운로드
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t tichall111/easy-terview:latest .
+          docker push tichall111/easy-terview:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+      - name: SSH into EC2 and deploy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/easy-terview/
+            
+            # 현재 실행 중인 컨테이너 확인
+            ACTIVE_PORT=$(docker ps --format '{{.Ports}}' | grep -oE '[0-9]+(?->8080)' || echo "8080")
+            if [ "$ACTIVE_PORT" == "8080" ]; then
+              NEW_PORT=8081
+              OLD_APP="app_blue"
+              NEW_APP="app_green"
+            else
+              NEW_PORT=8080
+              OLD_APP="app_green"
+              NEW_APP="app_blue"
+            fi
+            
+            # NEW_APP 컨테이너 실행에 필요한 이미지를 Docker Hub에서 가져옴
+            docker-compose pull $NEW_APP
+            
+            # 새로운 컨테이너 실행 (MySQL & Redis는 유지)
+            docker-compose up -d --no-deps --build $NEW_APP
+            
+            # 컨테이너 상태 확인
+            sleep 10
+            if [ "$(docker ps -q -f name=$NEW_APP)" ]; then
+              echo "New app container is running successfully!"
+              if [ "$NEW_APP" == "app_green" ]; then
+                # ALB 대상 그룹을 새로운 컨테이너로 변경
+                aws elbv2 modify-rule --rule-arn ${{ secrets.API_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.GREEN_TARGET_GROUP_ARN }}
+                aws elbv2 modify-rule --rule-arn ${{ secrets.OAUTH_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.GREEN_TARGET_GROUP_ARN }}
+                aws elbv2 modify-rule --rule-arn ${{ secrets.OAUTH_2_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.GREEN_TARGET_GROUP_ARN }}
+              else
+                # ALB 대상 그룹을 새로운 컨테이너로 변경
+                aws elbv2 modify-rule --rule-arn ${{ secrets.API_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.BLUE_TARGET_GROUP_ARN }}
+                aws elbv2 modify-rule --rule-arn ${{ secrets.OAUTH_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.BLUE_TARGET_GROUP_ARN }}
+                aws elbv2 modify-rule --rule-arn ${{ secrets.OAUTH_2_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.BLUE_TARGET_GROUP_ARN }}
+                
+              # 기존 컨테이너 중지 및 삭제 (MySQL & Redis 제외)
+              docker-compose stop $OLD_APP
+              docker-compose rm -f $OLD_APP
+            else
+              echo "New app failed to start!"
+              exit 1
+            fi
