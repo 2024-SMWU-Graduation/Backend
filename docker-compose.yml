@@ -1,0 +1,59 @@
+services:
+  app_blue:
+    networks:
+      - app-network
+    container_name: app_blue
+    image: tichall111/easy-terview:latest
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+  app_green:
+    networks:
+      - app-network
+    container_name: app_green
+    image: tichall111/easy-terview:latest
+    ports:
+      - "8081:8080"
+    env_file:
+      - .env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+  mysql:
+    container_name: mysql-container
+    networks:
+      - app-network
+    image: mysql:8.0
+    env_file:
+      - .env
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  redis:
+    networks:
+      - app-network
+    image: redis:latest
+    container_name: redis-container
+    ports:
+      - "6379:6379"
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
