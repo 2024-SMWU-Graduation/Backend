@@ -96,7 +96,7 @@ jobs:
             echo "✅ Started new container: $NEW_APP"
 
       - name: Wait for new container to start
-        run: sleep 180
+        run: sleep 60
 
       - name: SSH into EC2 - Verify new container is running
         uses: appleboy/ssh-action@v0.1.10
@@ -154,6 +154,7 @@ jobs:
             source /home/ubuntu/project/easy-terview/.env-cd
             set +a
             
+            cd /home/ubuntu/project/easy-terview/
             docker-compose stop $OLD_APP
             docker-compose rm -f $OLD_APP
             echo "✅ Stopped and removed old container: $OLD_APP"
