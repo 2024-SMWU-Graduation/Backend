@@ -53,14 +53,14 @@ jobs:
             if [ "$ACTIVE_PORT" == "8080" ]; then
               echo "🔵 Active container: BLUE (8080)"
               # 기존 변수가 존재하면 업데이트, 존재하지 않으면 추가하기
-              sed -i 's/^NEW_PORT=.*/NEW_PORT=8081/' /home/ubuntu/project/easy-terview/.env || echo "NEW_PORT=8081" >> /home/ubuntu/project/easy-terview/.env
-              sed -i 's/^OLD_APP=.*/OLD_APP=app_blue/' /home/ubuntu/project/easy-terview/.env || echo "OLD_APP=app_blue" >> /home/ubuntu/project/easy-terview/.env
-              sed -i 's/^NEW_APP=.*/NEW_APP=app_green/' /home/ubuntu/project/easy-terview/.env || echo "NEW_APP=app_green" >> /home/ubuntu/project/easy-terview/.env
+              grep -q "^NEW_PORT=" /home/ubuntu/project/easy-terview/.env-cd && sed -i 's/^NEW_PORT=.*/NEW_PORT=8081/' /home/ubuntu/project/easy-terview/.env-cd || echo "NEW_PORT=8081" >> /home/ubuntu/project/easy-terview/.env-cd
+              grep -q "^OLD_APP=" /home/ubuntu/project/easy-terview/.env-cd && sed -i 's/^OLD_APP=.*/OLD_APP=app_blue/' /home/ubuntu/project/easy-terview/.env-cd || echo "OLD_APP=app_blue" >> /home/ubuntu/project/easy-terview/.env-cd
+              grep -q "^NEW_APP=" /home/ubuntu/project/easy-terview/.env-cd && sed -i 's/^NEW_APP=.*/NEW_APP=app_green/' /home/ubuntu/project/easy-terview/.env-cd || echo "NEW_APP=app_green" >> /home/ubuntu/project/easy-terview/.env-cd
             else
               echo "🟢 Active container: GREEN (8081)"
-              sed -i 's/^NEW_PORT=.*/NEW_PORT=8080/' /home/ubuntu/project/easy-terview/.env || echo "NEW_PORT=8080" >> /home/ubuntu/project/easy-terview/.env
-              sed -i 's/^OLD_APP=.*/OLD_APP=app_green/' /home/ubuntu/project/easy-terview/.env || echo "OLD_APP=app_green" >> /home/ubuntu/project/easy-terview/.env
-              sed -i 's/^NEW_APP=.*/NEW_APP=app_blue/' /home/ubuntu/project/easy-terview/.env || echo "NEW_APP=app_blue" >> /home/ubuntu/project/easy-terview/.env
+              grep -q "^NEW_PORT=" /home/ubuntu/project/easy-terview/.env-cd && sed -i 's/^NEW_PORT=.*/NEW_PORT=8080/' /home/ubuntu/project/easy-terview/.env-cd || echo "NEW_PORT=8080" >> /home/ubuntu/project/easy-terview/.env-cd
+              grep -q "^OLD_APP=" /home/ubuntu/project/easy-terview/.env-cd && sed -i 's/^OLD_APP=.*/OLD_APP=app_green/' /home/ubuntu/project/easy-terview/.env-cd || echo "OLD_APP=app_green" >> /home/ubuntu/project/easy-terview/.env-cd
+              grep -q "^NEW_APP=" /home/ubuntu/project/easy-terview/.env-cd && sed -i 's/^NEW_APP=.*/NEW_APP=app_blue/' /home/ubuntu/project/easy-terview/.env-cd || echo "NEW_APP=app_blue" >> /home/ubuntu/project/easy-terview/.env-cd
             fi
 
       - name: SSH into EC2 - Pull new Docker image
@@ -70,9 +70,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # .env 파일 로드
+            # .env-cd 파일 로드
             set -a
-            source /home/ubuntu/project/easy-terview/.env
+            source /home/ubuntu/project/easy-terview/.env-cd
             set +a
             
             cd /home/ubuntu/project/easy-terview/
@@ -86,9 +86,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # .env 파일 로드
+            # .env-cd 파일 로드
             set -a
-            source /home/ubuntu/project/easy-terview/.env
+            source /home/ubuntu/project/easy-terview/.env-cd
             set +a
             
             cd /home/ubuntu/project/easy-terview/
@@ -105,9 +105,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # .env 파일 로드
+            # .env-cd 파일 로드
             set -a
-            source /home/ubuntu/project/easy-terview/.env
+            source /home/ubuntu/project/easy-terview/.env-cd
             set +a
             
             if [ "$(docker ps -q -f name=$NEW_APP)" ]; then
@@ -124,9 +124,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # .env 파일 로드
+            # .env-cd 파일 로드
             set -a
-            source /home/ubuntu/project/easy-terview/.env
+            source /home/ubuntu/project/easy-terview/.env-cd
             set +a
             
             if [ "$NEW_APP" == "app_green" ]; then
@@ -149,9 +149,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # .env 파일 로드
+            # .env-cd 파일 로드
             set -a
-            source /home/ubuntu/project/easy-terview/.env
+            source /home/ubuntu/project/easy-terview/.env-cd
             set +a
             
             docker-compose stop $OLD_APP
