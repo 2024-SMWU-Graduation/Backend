@@ -92,7 +92,7 @@ jobs:
             set +a
             
             cd /home/ubuntu/project/easy-terview/
-            docker-compose up -d --no-deps --build $NEW_APP
+            docker-compose up -d --build $NEW_APP
             echo "✅ Started new container: $NEW_APP"
 
       - name: Wait for new container to start
