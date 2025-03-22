@@ -52,14 +52,14 @@ jobs:
             ACTIVE_PORT=$(docker ps --format '{{.Ports}}' | awk -F '->' '{print $1}' | awk -F ':' '{print $2}' | head -n 1)
             if [ "$ACTIVE_PORT" == "8080" ]; then
               echo "🔵 Active container: BLUE (8080)"
-              NEW_PORT=8081
-              OLD_APP="app_blue"
-              NEW_APP="app_green"
+              echo "NEW_PORT=8081" >> $GITHUB_ENV
+              echo "OLD_APP=app_blue" >> $GITHUB_ENV
+              echo "NEW_APP=app_green" >> $GITHUB_ENV
             else
               echo "🟢 Active container: GREEN (8081)"
-              NEW_PORT=8080
-              OLD_APP="app_green"
-              NEW_APP="app_blue"
+              echo "NEW_PORT=8080" >> $GITHUB_ENV
+              echo "OLD_APP=app_green" >> $GITHUB_ENV
+              echo "NEW_APP=app_blue" >> $GITHUB_ENV
             fi
 
       - name: SSH into EC2 - Pull new Docker image
@@ -70,8 +70,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu/project/easy-terview/
-            docker-compose pull $NEW_APP
-            echo "✅ Pulled new image for $NEW_APP"
+            docker-compose pull ${{ env.NEW_APP }}
+            echo "✅ Pulled new image for ${{ env.NEW_APP }}"
 
       - name: SSH into EC2 - Start new container
         uses: appleboy/ssh-action@v0.1.10
@@ -81,8 +81,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu/project/easy-terview/
-            docker-compose up -d --no-deps --build $NEW_APP
-            echo "✅ Started new container: $NEW_APP"
+            docker-compose up -d --no-deps --build ${{ env.NEW_APP }}
+            echo "✅ Started new container: ${{ env.NEW_APP }}"
 
       - name: Wait for new container to start
         run: sleep 180
@@ -94,7 +94,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            if [ "$(docker ps -q -f name=$NEW_APP)" ]; then
+            if [ "$(docker ps -q -f name=${{ env.NEW_APP }})" ]; then
               echo "✅ New app container is running successfully!"
             else
               echo "❌ New app failed to start!"
@@ -108,7 +108,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            if [ "$NEW_APP" == "app_green" ]; then
+            if [ "${{ env.NEW_APP }}" == "app_green" ]; then
               echo "🔄 Switching to GREEN target group"
               aws elbv2 modify-rule --rule-arn ${{ secrets.API_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.GREEN_TARGET_GROUP_ARN }}
               aws elbv2 modify-rule --rule-arn ${{ secrets.OAUTH_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.GREEN_TARGET_GROUP_ARN }}
@@ -128,6 +128,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker-compose stop $OLD_APP
-            docker-compose rm -f $OLD_APP
-            echo "✅ Stopped and removed old container: $OLD_APP"
+            docker-compose stop ${{ env.OLD_APP }}
+            docker-compose rm -f ${{ env.OLD_APP }}
+            echo "✅ Stopped and removed old container: ${{ env.OLD_APP }}"
