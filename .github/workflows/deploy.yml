@@ -39,7 +39,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/easy-terview/
+            cd /home/ubuntu/project/easy-terview/
             echo "✅ Moved to project directory"
 
       - name: SSH into EC2 - Check active container
@@ -49,7 +49,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            ACTIVE_PORT=$(docker ps --format '{{.Ports}}' | grep -oE '[0-9]+(?->8080)' || echo "8080")
+            ACTIVE_PORT=$(docker ps --format '{{.Ports}}' | awk -F '->' '{print $1}' | awk -F ':' '{print $2}' | head -n 1)
             if [ "$ACTIVE_PORT" == "8080" ]; then
               echo "🔵 Active container: BLUE (8080)"
               NEW_PORT=8081
@@ -69,7 +69,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/easy-terview/
+            cd /home/ubuntu/project/easy-terview/
             docker-compose pull $NEW_APP
             echo "✅ Pulled new image for $NEW_APP"
 
@@ -80,7 +80,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/easy-terview/
+            cd /home/ubuntu/project/easy-terview/
             docker-compose up -d --no-deps --build $NEW_APP
             echo "✅ Started new container: $NEW_APP"
 
@@ -130,4 +130,4 @@ jobs:
           script: |
             docker-compose stop $OLD_APP
             docker-compose rm -f $OLD_APP
-            echo "✅ Stopped and removed old container: $OLD_APP
+            echo "✅ Stopped and removed old container: $OLD_APP"
