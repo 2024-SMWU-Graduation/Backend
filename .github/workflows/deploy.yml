@@ -32,7 +32,7 @@ jobs:
     needs: build-and-push
 
     steps:
-      - name: SSH into EC2 and deploy
+      - name: SSH into EC2 - Move to project directory
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -40,44 +40,94 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu/easy-terview/
-            
-            # 현재 실행 중인 컨테이너 확인
+            echo "✅ Moved to project directory"
+
+      - name: SSH into EC2 - Check active container
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
             ACTIVE_PORT=$(docker ps --format '{{.Ports}}' | grep -oE '[0-9]+(?->8080)' || echo "8080")
             if [ "$ACTIVE_PORT" == "8080" ]; then
+              echo "🔵 Active container: BLUE (8080)"
               NEW_PORT=8081
               OLD_APP="app_blue"
               NEW_APP="app_green"
             else
+              echo "🟢 Active container: GREEN (8081)"
               NEW_PORT=8080
               OLD_APP="app_green"
               NEW_APP="app_blue"
             fi
-            
-            # NEW_APP 컨테이너 실행에 필요한 이미지를 Docker Hub에서 가져옴
+
+      - name: SSH into EC2 - Pull new Docker image
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/easy-terview/
             docker-compose pull $NEW_APP
-            
-            # 새로운 컨테이너 실행 (MySQL & Redis는 유지)
+            echo "✅ Pulled new image for $NEW_APP"
+
+      - name: SSH into EC2 - Start new container
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/easy-terview/
             docker-compose up -d --no-deps --build $NEW_APP
-            
-            # 컨테이너 상태 확인
-            sleep 180
+            echo "✅ Started new container: $NEW_APP"
+
+      - name: Wait for new container to start
+        run: sleep 180
+
+      - name: SSH into EC2 - Verify new container is running
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
             if [ "$(docker ps -q -f name=$NEW_APP)" ]; then
-              echo "New app container is running successfully!"
-              if [ "$NEW_APP" == "app_green" ]; then
-                # ALB 대상 그룹을 새로운 컨테이너로 변경
-                aws elbv2 modify-rule --rule-arn ${{ secrets.API_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.GREEN_TARGET_GROUP_ARN }}
-                aws elbv2 modify-rule --rule-arn ${{ secrets.OAUTH_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.GREEN_TARGET_GROUP_ARN }}
-                aws elbv2 modify-rule --rule-arn ${{ secrets.OAUTH_2_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.GREEN_TARGET_GROUP_ARN }}
-              else
-                # ALB 대상 그룹을 새로운 컨테이너로 변경
-                aws elbv2 modify-rule --rule-arn ${{ secrets.API_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.BLUE_TARGET_GROUP_ARN }}
-                aws elbv2 modify-rule --rule-arn ${{ secrets.OAUTH_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.BLUE_TARGET_GROUP_ARN }}
-                aws elbv2 modify-rule --rule-arn ${{ secrets.OAUTH_2_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.BLUE_TARGET_GROUP_ARN }}
-                
-              # 기존 컨테이너 중지 및 삭제 (MySQL & Redis 제외)
-              docker-compose stop $OLD_APP
-              docker-compose rm -f $OLD_APP
+              echo "✅ New app container is running successfully!"
             else
-              echo "New app failed to start!"
+              echo "❌ New app failed to start!"
               exit 1
             fi
+
+      - name: SSH into EC2 - Update ALB Target Group
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            if [ "$NEW_APP" == "app_green" ]; then
+              echo "🔄 Switching to GREEN target group"
+              aws elbv2 modify-rule --rule-arn ${{ secrets.API_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.GREEN_TARGET_GROUP_ARN }}
+              aws elbv2 modify-rule --rule-arn ${{ secrets.OAUTH_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.GREEN_TARGET_GROUP_ARN }}
+              aws elbv2 modify-rule --rule-arn ${{ secrets.OAUTH_2_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.GREEN_TARGET_GROUP_ARN }}
+            else
+              echo "🔄 Switching to BLUE target group"
+              aws elbv2 modify-rule --rule-arn ${{ secrets.API_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.BLUE_TARGET_GROUP_ARN }}
+              aws elbv2 modify-rule --rule-arn ${{ secrets.OAUTH_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.BLUE_TARGET_GROUP_ARN }}
+              aws elbv2 modify-rule --rule-arn ${{ secrets.OAUTH_2_LISTENER_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ secrets.BLUE_TARGET_GROUP_ARN }}
+            fi
+            echo "✅ ALB target group updated"
+
+      - name: SSH into EC2 - Stop and Remove Old Container
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker-compose stop $OLD_APP
+            docker-compose rm -f $OLD_APP
+            echo "✅ Stopped and removed old container: $OLD_APP
