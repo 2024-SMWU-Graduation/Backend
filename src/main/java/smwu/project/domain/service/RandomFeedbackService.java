@@ -73,7 +73,7 @@ public class RandomFeedbackService {
     }
 
     private void checkUserPermission(RandomInterview randomInterview, User user) {
-        if(!randomInterview.getUser().equals(user)) {
+        if(!randomInterview.getUser().getId().equals(user.getId())) {
             throw new CustomException(InterviewErrorCode.INTERVIEW_UNAUTHORIZED_ACCESS);
         }
     }
