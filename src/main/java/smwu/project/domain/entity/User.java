@@ -1,27 +1,47 @@
 package smwu.project.domain.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
+import lombok.*;
+import smwu.project.domain.enums.OAuthProvider;
+import smwu.project.domain.enums.UserRole;
 import smwu.project.domain.enums.UserStatus;
 
 @Entity
 @Getter
-public class User {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    @Email
+    @Column(nullable = false)
     private String email;
 
-    @Size(min = 1, max = 100)
+    @Column(nullable = false)
     private String name;
 
-    @Size(min = 8, max = 30)
+//    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OAuthProvider oAuthProvider;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
+
+    public void editPassword(String newEncodedPassword) {
+        this.password = newEncodedPassword;
+    }
+
+    public void withdraw() {
+        this.userStatus = UserStatus.WITHDRAWAL;
+    }
 }

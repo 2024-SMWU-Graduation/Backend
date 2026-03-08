@@ -1,7 +1,89 @@
 package smwu.project.domain.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import smwu.project.domain.enums.OAuthProvider;
+import smwu.project.domain.dto.request.EditPasswordRequestDto;
+import smwu.project.domain.dto.request.SignUpRequestDto;
+import smwu.project.domain.dto.request.WithdrawRequestDto;
+import smwu.project.domain.dto.response.UserInfoResponseDto;
+import smwu.project.domain.entity.User;
+import smwu.project.domain.enums.UserRole;
+import smwu.project.domain.enums.UserStatus;
+import smwu.project.domain.repository.UserRepository;
+import smwu.project.global.exception.CustomException;
+import smwu.project.global.exception.errorCode.UserErrorCode;
+import smwu.project.global.jwt.RefreshTokenService;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final RefreshTokenService refreshTokenService;
+
+    @Transactional
+    public void signup(SignUpRequestDto requestDto) {
+        userRepository.checkEmailExists(requestDto.getEmail());
+
+        User newUser = User.builder()
+                .email(requestDto.getEmail())
+                .password(passwordEncoder.encode(requestDto.getPassword()))
+                .name(requestDto.getName())
+                .userStatus(UserStatus.ACTIVATE)
+                .oAuthProvider(OAuthProvider.ORIGIN)
+                .userRole(UserRole.USER)
+                .build();
+
+        userRepository.save(newUser);
+    }
+
+    public UserInfoResponseDto readUserInfo(User user) {
+        return UserInfoResponseDto.of(user);
+    }
+
+    @Transactional
+    public void editPassword(User user, EditPasswordRequestDto requestDto) {
+        String currentPassword = user.getPassword();
+        String inputPassword = requestDto.getPassword();
+        String newPassword = requestDto.getNewPassword();
+
+        checkPasswordMatch(currentPassword, inputPassword);
+        checkPasswordUnchanged(currentPassword, newPassword);
+
+        String newEncodedPassword = passwordEncoder.encode(requestDto.getNewPassword());
+        user.editPassword(newEncodedPassword);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void withdraw(User user, WithdrawRequestDto requestDto) {
+        String currentPassword = user.getPassword();
+        String inputPassword = requestDto.getPassword();
+
+        checkPasswordMatch(currentPassword, inputPassword);
+        user.withdraw();
+        userRepository.save(user);
+
+        refreshTokenService.deleteRefreshTokenInfo(user.getEmail());
+    }
+
+    public void logout(User user) {
+        refreshTokenService.deleteRefreshTokenInfo(user.getEmail());
+    }
+
+    private void checkPasswordMatch(String realPassword, String inputPassword) {
+        if(!passwordEncoder.matches(inputPassword, realPassword)) { // 인코딩 이전 값, 인코딩 이후 값
+            throw new CustomException(UserErrorCode.PASSWORD_MISMATCH);
+        }
+    }
+
+    private void checkPasswordUnchanged(String currentPassword, String newPassword) {
+        if(passwordEncoder.matches(newPassword, currentPassword)) {
+            throw new CustomException(UserErrorCode.PASSWORD_SAME_AS_OLD);
+        }
+    }
 }
